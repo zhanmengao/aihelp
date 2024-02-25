@@ -1,0 +1,9 @@
+build.sh
+pbclass.exe
+.idea
+.vscode
+internal/pbclass/auto_gen/*.pb.go
+internal/xerrors
+gogoplugin
+go.work*
+*.yaml
