@@ -4,3 +4,5 @@ DEPLOY_NAME = "template-single"
 DOCKER_NAME = "template-single"
 
 include ./hack/hack.mk
+
+proto:

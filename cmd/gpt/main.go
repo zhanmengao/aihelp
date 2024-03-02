@@ -32,8 +32,8 @@ func main() {
 	if err := config.Init(global.ConfigFile); err != nil {
 		panic(err)
 	}
-	//gptURL := "https://api.openai.com/v1/completions"
-	gptURL := "https://one.aiskt.com/v1/chat/completions"
+	gptURL := "https://api.openai.com/v1/completions"
+	//gptURL := "https://one.aiskt.com/v1/chat/completions"
 	os.Setenv("http_proxy", config.GptConfig.HttpProxy)
 	os.Setenv("https_proxy", config.GptConfig.HttpProxy)
 	os.Setenv("all_proxy", config.GptConfig.AllProxy)
