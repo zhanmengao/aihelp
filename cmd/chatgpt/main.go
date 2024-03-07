@@ -7,7 +7,6 @@ import (
 	"log"
 	"log/slog"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -42,9 +41,6 @@ func main() {
 	if err := config.Init(global.ConfigFile); err != nil {
 		panic(err)
 	}
-	os.Setenv("http_proxy", config.GptConfig.HttpProxy)
-	os.Setenv("https_proxy", config.GptConfig.HttpProxy)
-	os.Setenv("all_proxy", config.GptConfig.AllProxy)
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(time.Duration(5)*time.Second))
 	defer cancel()
 	header := http.Header{}
@@ -54,7 +50,7 @@ func main() {
 	if err != nil {
 		log.Fatal("dial:", err)
 	} else {
-		slog.Error("connect to %s", endpoint)
+		slog.Info("connect to %s", endpoint)
 	}
 	defer c.Close()
 

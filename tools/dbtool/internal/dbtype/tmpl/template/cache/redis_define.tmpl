@@ -1,0 +1,15 @@
+package cache
+
+{{range . -}}
+// DB: {{.Key}}, TotalKeys: {{len .Slice}}
+const (
+{{range .Slice -}}
+	key{{.StructName}} = "{{.KeyFmt}}" // type: {{.Type}}
+	field{{.StructName}} = "{{.FieldFmt}}"
+{{end -}}
+)
+{{end -}}
+
+{{range .}}
+type {{.Key}} struct{}
+{{end}}

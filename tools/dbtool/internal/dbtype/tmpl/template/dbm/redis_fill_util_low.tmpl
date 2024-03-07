@@ -1,0 +1,70 @@
+//go:build !go1.18
+// +build !go1.18
+
+package dbm
+
+import (
+	"reflect"
+)
+
+// fillPBExample 初始化一个所有字段非空值的pb结构体
+func fillPBExample(e interface{}) interface{} {
+	return createNoneZeroBasic(reflect.TypeOf(e)).Interface()
+}
+
+// createNoneZeroBasic 为基础类型生成非0值
+// map array slice 会生成包含一个元素的值
+// chan func interface unsafe.Pointer这几类特殊类型仍然生成0值
+func createNoneZeroBasic(typ reflect.Type) reflect.Value {
+	switch typ.Kind() {
+	case reflect.Bool:
+		return reflect.ValueOf(true)
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		val := reflect.New(typ).Elem()
+		val.SetInt(123)
+		return val
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		val := reflect.New(typ).Elem()
+		val.SetUint(123)
+		return val
+	case reflect.Float32, reflect.Float64:
+		val := reflect.New(typ).Elem()
+		val.SetFloat(0.123)
+		return val
+	case reflect.String:
+		return reflect.ValueOf("str")
+	case reflect.Array:
+		t := reflect.ArrayOf(1, typ.Elem())
+		arr := reflect.New(t).Elem()
+		arr.Index(0).Set(createNoneZeroBasic(typ.Elem()))
+		return arr
+	case reflect.Slice:
+		sl := reflect.MakeSlice(typ, 0, 1)
+		return reflect.Append(sl, createNoneZeroBasic(typ.Elem()))
+	case reflect.Map:
+		m := reflect.MakeMapWithSize(typ, 1)
+		m.SetMapIndex(createNoneZeroBasic(m.Type().Key()), createNoneZeroBasic(m.Type().Elem()))
+		return m
+	case reflect.Chan, reflect.Func, reflect.Interface, reflect.UnsafePointer:
+		return reflect.Zero(typ)
+	}
+	// Pointer, Struct
+	var val, elem reflect.Value
+	if typ.Kind() == reflect.Struct {
+		val = reflect.New(typ).Elem()
+		elem = val
+	} else if typ.Kind() == reflect.Ptr {
+		if typ.Elem().Kind() != reflect.Struct {
+			return createNoneZeroBasic(typ.Elem())
+		}
+		val = reflect.New(typ.Elem())
+		elem = val.Elem()
+	} else {
+		return reflect.Zero(typ)
+	}
+	for i := 0; i < elem.NumField(); i++ {
+		field := elem.Field(i)
+		field.Set(createNoneZeroBasic(field.Type()))
+	}
+	return val
+}

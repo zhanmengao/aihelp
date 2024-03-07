@@ -1,0 +1,11 @@
+package cache
+
+import (
+	"context"
+	"fmt"
+	{{if .MParams -}}
+	params "{{.GenPkgPath}}/gendb/params"
+	{{end -}}
+	pb "{{.PbPkgPath}}/pb"
+	"forevernine.com/midplat/base_server/basedb"
+)

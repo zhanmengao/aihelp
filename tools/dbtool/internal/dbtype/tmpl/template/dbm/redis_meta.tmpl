@@ -1,0 +1,78 @@
+package dbm
+
+import (
+	"context"
+	"encoding/json"
+
+	"{{.GenPkgPath}}/gendb"
+	"{{.PbPkgPath}}/pb"
+)
+
+type ParamItem struct {
+	Name  string `json:"name,omitempty"`
+	Type  string `json:"type,omitempty"`
+	Value string `json:"value,omitempty"`
+
+	parse paramParser `json:"-"`
+}
+
+type opFunc func(ctx context.Context, meta metadata, param map[string]string) (data string, err error)
+
+type metadata struct {
+	DBName     string
+	MethodName string
+	Params     map[string]ParamItem
+	do         opFunc
+	example    string
+}
+
+var (
+	{{range .DBs -}}
+	g{{.Key}} = gendb.New{{.Key}}DBRedis()
+	{{end -}}
+)
+
+var operations = map[string]metadata{
+{{range .DBs -}}
+	{{range .Slice -}}
+	"{{.DBName}}.Get{{.StructName}}": {
+		DBName:     "{{.DBName}}",
+		MethodName: "Get{{.StructName}}",
+		Params: map[string]ParamItem{
+		{{range .Params -}}
+			"{{.ParamName}}": {Name: "{{.ParamName}}", Type: "{{.ParamType}}", parse: parse{{.ParamType}}},
+		{{end -}}
+		},
+		do: g{{.DBName}}Get{{.StructName}},
+	},
+	"{{.DBName}}.Set{{.StructName}}": {
+		DBName:     "{{.DBName}}",
+		MethodName: "Set{{.StructName}}",
+		Params: map[string]ParamItem{},
+		do: g{{.DBName}}Set{{.StructName}},
+		example: func() string { bts, _ := json.MarshalIndent(fillPBExample(&pb.{{.StructName}}{}), "", "  "); return string(bts) }(),
+	},
+	{{if eq .Type "string" -}}
+	"{{.DBName}}.SetEX{{.StructName}}": {
+		DBName:     "{{.DBName}}",
+		MethodName: "Set{{.StructName}}",
+		Params: map[string]ParamItem{
+			"rdb_expire": {Name: "rdb_expire", Type: "int", parse: parseint},
+		},
+		do: g{{.DBName}}SetEX{{.StructName}},
+		example: func() string { bts, _ := json.MarshalIndent(fillPBExample(&pb.{{.StructName}}{}), "", "  "); return string(bts) }(),
+	},
+	{{end -}}
+	"{{.DBName}}.Delete{{.StructName}}": {
+		DBName:     "{{.DBName}}",
+		MethodName: "Delete{{.StructName}}",
+		Params: map[string]ParamItem{
+		{{range .Params -}}
+			"{{.ParamName}}": {Name: "{{.ParamName}}", Type: "{{.ParamType}}", parse: parse{{.ParamType}}},
+		{{end -}}
+		},
+		do: g{{.DBName}}Delete{{.StructName}},
+	},
+	{{end -}}
+{{end -}}
+}

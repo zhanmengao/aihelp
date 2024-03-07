@@ -1,0 +1,13 @@
+package params
+
+{{range .}}
+{{range .Slice -}}
+{{if .MParams -}}
+type {{.StructName}} struct {
+	{{range .Params -}}
+	{{.ParamName}} {{.ParamType}}
+	{{end }}
+}
+{{end -}}
+{{end -}}
+{{end}}

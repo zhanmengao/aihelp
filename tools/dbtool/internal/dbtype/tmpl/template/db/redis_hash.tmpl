@@ -1,0 +1,212 @@
+
+func (p *{{.DBName}})get{{.StructName}}Database()*basedb.THashStore[*pb.{{.StructName}}]{
+    return basedb.NewHashStore[*pb.{{.StructName}}](dbnames.{{.DBName}},key{{.StructName}},field{{.StructName}},"{{.StructName}}")
+}
+// GetKey{{.StructName}} returns key of {{.StructName}}
+//
+// generated from "{{.SrcComment}}"
+func (p *{{.DBName}}) GetKey{{.StructName}}({{range .KeyParams}}{{.ParamName}} {{.ParamType}},{{end}}) string {
+	{{$paramCount := len .KeyParams}}{{if eq $paramCount 0 -}}
+	return key{{.StructName}}
+	{{else -}}
+	return fmt.Sprintf(key{{.StructName}}, {{range .KeyParams}}{{.ParamName}}, {{end}})
+	{{end -}}
+}
+
+// GetField{{.StructName}} returns field of {{.StructName}}
+//
+// generated from "{{.SrcComment}}"
+func (p *{{.DBName}}) GetField{{.StructName}}({{range .FieldParams}}{{.ParamName}} {{.ParamType}},{{end}}) string {
+	{{$paramCount := len .FieldParams}}{{if eq $paramCount 0 -}}
+	return field{{.StructName}}
+	{{else -}}
+	return fmt.Sprintf(field{{.StructName}}, {{range .FieldParams}}{{.ParamName}}, {{end}})
+	{{end -}}
+}
+
+// Get{{.StructName}} loads {{.StructName}} from `{{.DBName}}`
+//   data *pb.{{.StructName}} if every thing goes well.
+//   ok   bool is false if there is no data.
+//   err  error is not nil if there is something wrong except no data.
+//
+// prometheus metric: QPS, KeySize and OperationProcessTime
+//
+// generated from "{{.SrcComment}}"
+func (p *{{.DBName}}) Get{{.StructName}}(ctx context.Context, {{range .Params}}{{.ParamName}} {{.ParamType}},{{end}} opts ...*basedb.Options[*pb.{{.StructName}}]) (data *pb.{{.StructName}}, ok bool, err error) {
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}{{.ParamName}}, {{end}})
+	field := p.GetField{{.StructName}}({{range .FieldParams}}{{.ParamName}}, {{end}})
+	data = &pb.{{.StructName}}{}
+    db := p.get{{.StructName}}Database()
+    ok,err = db.Get(ctx,key,field,&data,opts...)
+    if !ok|| err!=nil{
+        {{range .Params -}}
+    	data.{{.ParamName}} = {{.ParamName}}
+    	{{end -}}
+    }
+    return
+}
+
+func (p *{{.DBName}}) Get{{.StructName}}WithSession(ctx context.Context, {{range .Params}}{{.ParamName}} {{.ParamType}},{{end}} opts ...*basedb.Options[*pb.{{.StructName}}]) (data *pb.{{.StructName}}, ok bool, err error) {
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}{{.ParamName}}, {{end}})
+	field := p.GetField{{.StructName}}({{range .FieldParams}}{{.ParamName}}, {{end}})
+	data = &pb.{{.StructName}}{}
+    db := p.get{{.StructName}}Database()
+    ok,err= db.GetFromSession(ctx,key,field,&data,opts...)
+    if !ok || err!=nil{
+        {{range .Params -}}
+    	data.{{.ParamName}} = {{.ParamName}}
+    	{{end -}}
+    }
+    return
+}
+
+
+{{if .MultiMark -}}
+// MGet{{.StructName}} 
+//   data *pb.{{.StructName}}
+//   err  error any error when put data to database
+//
+// prometheus metric: QPS, KeySize and OperationProcessTime
+// 
+// generated from "{{.SrcComment}}"{{ $paramCount := len .Params }} {{$paramType := printf "params.%s" .StructName}}
+func (p *{{.DBName}}) {{if eq $paramCount 1}}{{ $param := index .Params 0 }}{{ $paramType = $param.ParamType -}}
+	MGet{{.StructName}}(ctx context.Context, ps []{{$paramType}})(data map[{{$paramType}}]*pb.{{.StructName}}, err error){{else -}}
+	MGet{{.StructName}}(ctx context.Context, ps []{{$paramType}})(data map[{{$paramType}}]*pb.{{.StructName}}, err error){{end}} {
+	keys := make([]string, 0, len(ps))
+	fields := make([]string, 0, len(ps))
+	for _, v := range ps {
+		{{if eq $paramCount 1 }}{{ $keyParamCount := len .KeyParams -}}
+			{{if eq $keyParamCount 1 -}}
+			keys = append(keys, p.GetKey{{.StructName}}(v))
+			fields = append(fields, p.GetField{{.StructName}}())
+			{{else -}}
+			keys = append(keys, p.GetKey{{.StructName}}())
+			fields = append(fields, p.GetField{{.StructName}}(v))
+			{{end -}}
+		{{else -}}
+		keys = append(keys, p.GetKey{{.StructName}}({{range .KeyParams}}v.{{.ParamName}}, {{end}}))
+		fields = append(fields, p.GetField{{.StructName}}({{range .FieldParams}}v.{{.ParamName}}, {{end}}))
+		{{end -}}
+	}
+	ret, err := p.mget{{.StructName}}(ctx, keys, fields)
+	if err != nil {
+		return
+	}
+	data = make(map[{{$paramType}}]*pb.{{.StructName}}, len(ret))
+	for i, v := range ret {
+		data[ps[i]] = v
+	}
+	return
+}
+
+func (p *{{.DBName}}) mget{{.StructName}}(ctx context.Context, keys, fields []string) (data []*pb.{{.StructName}}, err error) {
+	const command = "M-HGET"
+	rdb := basedb.NewRedisClient(dbnames.{{.DBName}})
+	data = make([]*pb.{{.StructName}}, 0, len(keys))
+	err = rdb.RawCall(func(conn redisdb.LowLevelRawConn) (err error) {
+		for i, key := range keys {
+			if err = conn.Send("HGET", key, fields[i]); err != nil {
+				return
+			}
+		}
+		if err = conn.Flush(); err != nil {
+			return
+		}
+		for range keys {
+			bs, e := redis.Bytes(conn.Receive())
+			if e != nil {
+				err = e
+				return
+			}
+			d := &pb.{{.StructName}}{}
+			if err = d.Unmarshal(bs); err != nil {
+				return
+			}
+			dataSize += len(bs)
+			data = append(data, d)
+		}
+		return
+	})
+	return
+}
+{{end -}}
+
+// Set{{.StructName}} saves {{.StructName}} to `{{.DBName}}`
+//   err error any error when put data to database
+//
+// prometheus metric: QPS, KeySize and OperationProcessTime
+//
+// generated from "{{.SrcComment}}"
+func (p *{{.DBName}}) Set{{.StructName}}(ctx context.Context, data *pb.{{.StructName}}) (err error) {
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}data.{{.ParamName}}, {{end}})
+	field := p.GetField{{.StructName}}({{range .FieldParams}}data.{{.ParamName}}, {{end}})
+    db := p.get{{.StructName}}Database()
+    return db.Set(ctx,key,field,data)
+}
+
+
+func (p *{{.DBName}}) Set{{.StructName}}WithSess(ctx context.Context, data *pb.{{.StructName}}) (err error) {
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}data.{{.ParamName}}, {{end}})
+	field := p.GetField{{.StructName}}({{range .FieldParams}}data.{{.ParamName}}, {{end}})
+    db := p.get{{.StructName}}Database()
+    return db.SetWithSess(ctx,key,field,data)
+}
+
+
+{{if .MultiMark -}}
+func (p *{{.DBName}}) MSet{{.StructName}}(ctx context.Context, data []*pb.{{.StructName}}) (err error) {
+	const command = "M-HSET"
+	keys := make([]string, 0, len(data))
+	fields := make([]string, 0, len(data))
+	for _, d := range data {
+		keys = append(keys, p.GetKey{{.StructName}}({{range .KeyParams}}d.{{.ParamName}}, {{end}}))
+		fields = append(fields, p.GetField{{.StructName}}({{range .FieldParams}}d.{{.ParamName}}, {{end}}))
+	}
+	err = p.mset{{.StructName}}(ctx, keys, fields, data)
+	return
+}
+
+func (p *{{.DBName}}) mset{{.StructName}}(ctx context.Context, keys []string, fields []string, data []*pb.{{.StructName}}) (err error) {
+	const command = "M-HSET"
+	rdb := basedb.NewRedisClient(dbnames.{{.DBName}})
+	dataList := make([][]byte, 0, len(data))
+	for _, d := range data {
+		bs, e := d.Marshal()
+		if e != nil {
+			err = e
+			return
+		}
+		dataSize += len(bs)
+		dataList = append(dataList, bs)
+	}
+	return rdb.RawCall(func(conn redisdb.LowLevelRawConn) (err error) {
+		for i, bs := range dataList {
+			key, field := keys[i], fields[i]
+			if err = conn.Send("HSET", key, field, bs); err != nil {
+				return err
+			}
+		}
+		if err = conn.Flush(); err != nil {
+			return
+		}
+		for range keys {
+			_, err = conn.Receive()
+			if err != nil {
+				return
+			}
+		}
+		return nil
+	})
+}
+{{end -}}
+
+// Delete{{.StructName}} is generated from "{{.SrcComment}}"
+//   err  error any error when put data to database
+// if monitor is enabled on init this operation records prometheus
+// metric: QPS and OperationProcessTime
+func(p *{{.DBName}})Delete{{.StructName}}(ctx context.Context, {{range .Params}}{{.ParamName}} {{.ParamType}},{{end}})(ok bool, err error){
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}{{.ParamName}}, {{end}})
+	field := p.GetField{{.StructName}}({{range .FieldParams}}{{.ParamName}}, {{end}})
+    db := p.get{{.StructName}}Database()
+    return db.Delete(ctx,key,field)
+}

@@ -1,0 +1,78 @@
+package dbm
+
+import (
+	"context"
+	"encoding/json"
+
+	"forevernine.com/midplat/base_libs/zerocopy"
+	"{{.PbPkgPath}}/pb"
+)
+
+{{range .Slice -}}
+func g{{.DBName}}Get{{.StructName}}(ctx context.Context, meta metadata, param map[string]string) (data string, err error) {
+	{{range .Params -}}
+	{{.ParamName}}, err := meta.Params["{{.ParamName}}"].parse(param["{{.ParamName}}"])
+	if err != nil {
+		return
+	}
+	{{end -}}
+	ret, _, err := g{{.DBName}}.Get{{.StructName}}(ctx, {{range .Params}}{{.ParamName}}.({{.ParamType}}),{{end}})
+	if err != nil {
+		return
+	}
+	bs, err := json.Marshal(ret)
+	if err != nil {
+		return
+	}
+	data = zerocopy.BtsToString(bs)
+	return
+}
+
+func g{{.DBName}}Set{{.StructName}}(ctx context.Context, meta metadata, param map[string]string) (data string, err error) {
+	st := &pb.{{.StructName}}{}
+	if err = json.Unmarshal(zerocopy.StrToBytes(param["data"]), st); err != nil {
+		return
+	}
+	if err = g{{.DBName}}.Set{{.StructName}}(ctx, st); err != nil {
+		return
+	}
+	data = param["data"]
+	return
+}
+
+{{if eq .Type "string" -}}
+func g{{.DBName}}SetEX{{.StructName}}(ctx context.Context, meta metadata, param map[string]string) (data string, err error) {
+	st := &pb.{{.StructName}}{}
+	if err = json.Unmarshal(zerocopy.StrToBytes(param["data"]), st); err != nil {
+		return
+	}
+	expire, err := parseint(param["rdb_expire"])
+	if err != nil {
+		return
+	}
+	if err = g{{.DBName}}.SetEX{{.StructName}}(ctx, st, expire.(int)); err != nil {
+		return
+	}
+	data = param["data"]
+	return
+}
+{{end -}}
+
+func g{{.DBName}}Delete{{.StructName}}(ctx context.Context, meta metadata, param map[string]string) (data string, err error) {
+	{{range .Params -}}
+	{{.ParamName}}, err := meta.Params["{{.ParamName}}"].parse(param["{{.ParamName}}"])
+	if err != nil {
+		return
+	}
+	{{end -}}
+	ok, err := g{{.DBName}}.Delete{{.StructName}}(ctx, {{range .Params}}{{.ParamName}}.({{.ParamType}}),{{end}})
+	if err != nil {
+		return
+	}
+	data = `{"status": "OK"}`
+	if !ok {
+		data = `{"status": "NotOK"}`
+	}
+	return
+}
+{{end -}}

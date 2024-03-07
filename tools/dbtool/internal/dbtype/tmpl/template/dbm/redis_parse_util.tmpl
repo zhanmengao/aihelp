@@ -1,0 +1,99 @@
+package dbm
+
+import (
+	"strconv"
+)
+
+type paramParser func(s string) (interface{}, error)
+
+func parsestring(s string) (interface{}, error) {
+	return s, nil
+}
+
+func parsebool(s string) (interface{}, error) {
+	return strconv.ParseBool(s)
+}
+
+func parseuint64(s string) (interface{}, error) {
+	return strconv.ParseUint(s, 10, 64)
+}
+
+func parseint64(s string) (interface{}, error) {
+	return strconv.ParseInt(s, 10, 64)
+}
+
+func parseuint(s string) (interface{}, error) {
+	i, err := strconv.ParseUint(s, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+	return uint(i), nil
+}
+
+func parseint(s string) (interface{}, error) {
+	i, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+	return int(i), nil
+}
+
+func parseuint32(s string) (interface{}, error) {
+	i, err := strconv.ParseUint(s, 10, 32)
+	if err != nil {
+		return nil, err
+	}
+	return uint32(i), nil
+}
+
+func parseint32(s string) (interface{}, error) {
+	i, err := strconv.ParseInt(s, 10, 32)
+	if err != nil {
+		return nil, err
+	}
+	return int32(i), nil
+}
+
+func parseuint16(s string) (interface{}, error) {
+	i, err := strconv.ParseUint(s, 10, 16)
+	if err != nil {
+		return nil, err
+	}
+	return uint16(i), nil
+}
+
+func parseint16(s string) (interface{}, error) {
+	i, err := strconv.ParseInt(s, 10, 16)
+	if err != nil {
+		return nil, err
+	}
+	return int16(i), nil
+}
+
+func parseuint8(s string) (interface{}, error) {
+	i, err := strconv.ParseUint(s, 10, 8)
+	if err != nil {
+		return nil, err
+	}
+	return uint8(i), nil
+}
+
+func parseint8(s string) (interface{}, error) {
+	i, err := strconv.ParseInt(s, 10, 8)
+	if err != nil {
+		return nil, err
+	}
+	return int8(i), nil
+}
+
+func parsefloat64(s string) (interface{}, error) {
+	return strconv.ParseFloat(s, 64)
+}
+
+func parsefloat32(s string) (interface{}, error) {
+	i, err := strconv.ParseFloat(s, 32)
+	if err != nil {
+		return nil, err
+	}
+	return float32(i), nil
+}

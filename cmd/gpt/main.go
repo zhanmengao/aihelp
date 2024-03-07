@@ -9,7 +9,6 @@ import (
 	"io/ioutil"
 	"log/slog"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -33,10 +32,6 @@ func main() {
 		panic(err)
 	}
 	gptURL := "https://api.openai.com/v1/completions"
-	//gptURL := "https://one.aiskt.com/v1/chat/completions"
-	os.Setenv("http_proxy", config.GptConfig.HttpProxy)
-	os.Setenv("https_proxy", config.GptConfig.HttpProxy)
-	os.Setenv("all_proxy", config.GptConfig.AllProxy)
 	// 输入提示
 	prompt := "Once upon a time,"
 

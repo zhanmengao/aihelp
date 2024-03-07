@@ -3,7 +3,7 @@ package v35
 import (
 	"context"
 	"github.com/sashabaranov/go-openai"
-	"github.com/zhanmengao/aihelp/config"
+	"github.com/zhanmengao/aihelp/module/gpt/client"
 )
 
 type TGpt35 struct {
@@ -13,11 +13,11 @@ type TGpt35 struct {
 
 func (p *TGpt35) SendMessage(ctx context.Context, msg []byte) (err error) {
 	//TODO 读出当前会话上下文
-	cli := openai.NewClient(config.GptConfig.ApiKey)
-	_, err = cli.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
+	cli := client.NewV3Client()
+	resp, err := cli.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
 		Model:            "",
 		Messages:         nil,
-		MaxTokens:        0,
+		MaxTokens:        4096,
 		Temperature:      0,
 		TopP:             0,
 		N:                0,
@@ -31,10 +31,11 @@ func (p *TGpt35) SendMessage(ctx context.Context, msg []byte) (err error) {
 		LogProbs:         false,
 		TopLogProbs:      0,
 		User:             "",
-		Functions:        nil,
-		FunctionCall:     nil,
 		Tools:            nil,
 		ToolChoice:       nil,
 	})
+	if err != nil {
+		return
+	}
 	return
 }

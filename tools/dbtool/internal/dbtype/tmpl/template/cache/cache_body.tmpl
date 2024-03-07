@@ -1,0 +1,97 @@
+
+
+// GetKey{{.StructName}} returns key of {{.StructName}}
+//
+// generated from "{{.SrcComment}}"
+func (p *{{.DBName}}) GetKey{{.StructName}}({{range .KeyParams}}{{.ParamName}} {{.ParamType}},{{end}}) string {
+	{{$paramCount := len .KeyParams}}{{if eq $paramCount 0 -}}
+	return key{{.StructName}}
+	{{else -}}
+	return fmt.Sprintf(key{{.StructName}}, {{range .KeyParams}}{{.ParamName}}, {{end}})
+	{{end -}}
+}
+
+// GetField{{.StructName}} returns field of {{.StructName}}
+//
+// generated from "{{.SrcComment}}"
+func (p *{{.DBName}}) GetField{{.StructName}}({{range .FieldParams}}{{.ParamName}} {{.ParamType}},{{end}}) string {
+	{{$paramCount := len .FieldParams}}{{if eq $paramCount 0 -}}
+	return field{{.StructName}}
+	{{else -}}
+	return fmt.Sprintf(field{{.StructName}}, {{range .FieldParams}}{{.ParamName}}, {{end}})
+	{{end -}}
+}
+
+func (p *{{.DBName}}) Get{{.StructName}}(ctx context.Context, {{range .Params}}{{.ParamName}} {{.ParamType}},{{end}}opts ...*basedb.Options[*pb.{{.StructName}}]) (data *pb.{{.StructName}}, ok bool, err error) {
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}{{.ParamName}}, {{end}})
+	field := p.GetField{{.StructName}}({{range .FieldParams}}{{.ParamName}}, {{end}})
+	iData,ok := getLRUCache(key,field)
+	if ok{
+	    data,ok = iData.(*pb.{{.StructName}})
+	}else{
+	    data = &pb.{{.StructName}}{}
+		{{range .Params -}}
+		data.{{.ParamName}} = {{.ParamName}}
+		{{end -}}
+	}
+    return
+}
+
+func (p *{{.DBName}}) Get{{.StructName}}WithSession(ctx context.Context, {{range .Params}}{{.ParamName}} {{.ParamType}},{{end}}opts ...*basedb.Options[*pb.{{.StructName}}]) (data *pb.{{.StructName}}, ok bool, err error) {
+    return p. Get{{.StructName}}(ctx,{{range .Params}}{{.ParamName}} ,{{end}})
+}
+
+
+{{if .MultiMark -}}
+// MGet{{.StructName}}
+//   data *pb.{{.StructName}}
+//   err  error any error when put data to database
+//
+// prometheus metric: QPS, KeySize and OperationProcessTime
+//
+// generated from "{{.SrcComment}}"{{ $paramCount := len .Params }} {{$paramType := printf "params.%s" .StructName}}
+func (p *{{.DBName}}) {{if eq $paramCount 1}}{{ $param := index .Params 0 }}{{ $paramType = $param.ParamType -}}
+	MGet{{.StructName}}(ctx context.Context, ps []{{$paramType}})(data map[{{$paramType}}]*pb.{{.StructName}}, err error){{else -}}
+	MGet{{.StructName}}(ctx context.Context, ps []{{$paramType}})(data map[{{$paramType}}]*pb.{{.StructName}}, err error){{end}} {
+    return
+}
+{{end -}}
+
+func (p *{{.DBName}}) Set{{.StructName}}(ctx context.Context, data *pb.{{.StructName}}) (err error) {
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}data.{{.ParamName}}, {{end}})
+	field := p.GetField{{.StructName}}({{range .FieldParams}}data.{{.ParamName}}, {{end}})
+    setLRUCache(key,field,0,data)
+    return
+}
+
+func (p *{{.DBName}}) Set{{.StructName}}WithSess(ctx context.Context, data *pb.{{.StructName}}) (err error) {
+    return p.Set{{.StructName}}(ctx,data)
+}
+
+{{if .MultiMark -}}
+func (p *{{.DBName}}) MSet{{.StructName}}(ctx context.Context, data []*pb.{{.StructName}}) (err error) {
+    return
+}
+{{end -}}
+
+func (p *{{.DBName}}) SetEX{{.StructName}}(ctx context.Context, data *pb.{{.StructName}}, ttl int)(err error) {
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}data.{{.ParamName}}, {{end}})
+	field := p.GetField{{.StructName}}({{range .FieldParams}}data.{{.ParamName}}, {{end}})
+    setLRUCache(key,field,int64(ttl),data)
+    return
+}
+
+func (p *{{.DBName}}) SetEX{{.StructName}}WithSess(ctx context.Context, data *pb.{{.StructName}}, ttl int) (err error) {
+    return p.SetEX{{.StructName}}(ctx,data,ttl)
+}
+
+// Delete{{.StructName}} is generated from "{{.SrcComment}}"
+//   err  error any error when put data to database
+// if monitor is enabled on init this operation records prometheus
+// metric: QPS and OperationProcessTime
+func(p *{{.DBName}})Delete{{.StructName}}(ctx context.Context, {{range .Params}}{{.ParamName}} {{.ParamType}},{{end}})(ok bool, err error){
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}{{.ParamName}}, {{end}})
+	field := p.GetField{{.StructName}}({{range .FieldParams}}{{.ParamName}}, {{end}})
+    delLRUCache(key,field)
+    return
+}

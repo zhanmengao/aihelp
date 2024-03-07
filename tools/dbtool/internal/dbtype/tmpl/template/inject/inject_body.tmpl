@@ -1,0 +1,57 @@
+
+func New{{.StructName}}({{range .Params}}{{.ParamName}} {{.ParamType}},{{end}})*{{.StructName}}{
+    ret := &{{.StructName}}{
+    {{range .Params -}}
+    {{.ParamName}} : {{.ParamName}},
+    {{end -}}
+    }
+    return ret
+}
+
+func (p *{{.StructName}}) GetDBKey() string {
+	{{$paramCount := len .KeyParams}}{{if eq $paramCount 0 -}}
+	key := "{{.KeyFmt}}"
+	{{else -}}
+	key := fmt.Sprintf("{{.KeyFmt}}", {{range .KeyParams}}p.{{.ParamName}}, {{end}})
+	{{end -}}
+	return key
+}
+
+func(p *{{.StructName}}) GetDBKeyFormat() string {
+    return "{{.KeyFmt}}"
+}
+
+func (p *{{.StructName}}) GetDBField() string {
+	{{$paramCount := len .KeyParams}}{{if eq $paramCount 0 -}}
+	key := "{{.FieldFmt}}"
+	{{else -}}
+	key := fmt.Sprintf("{{.FieldFmt}}", {{range .FieldParams}}p.{{.ParamName}}, {{end}})
+	{{end -}}
+	return key
+}
+
+func(p *{{.StructName}}) GetDBFieldFormat() string {
+    return "{{.FieldFmt}}"
+}
+
+func(p *{{.StructName}})GetDBKeyName()string{
+    return "{{.StructName}}"
+}
+
+
+
+func(p *{{.StructName}})GetDBName()string{
+    return "{{.DBName}}"
+}
+
+func(p *{{.StructName}})CopyFrom(other redisdb.IDBProto)(err error){
+    body, err := other.Marshal()
+    if err!=nil{
+        return
+    }
+    err = p.Unmarshal(body)
+    if err!=nil{
+        return
+    }
+    return
+}

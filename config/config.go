@@ -9,9 +9,10 @@ import (
 )
 
 type TGptConfig struct {
-	ApiKey    string `yaml:"api_key" json:"api_key"`
-	HttpProxy string `yaml:"http_proxy" json:"http_proxy"`
-	AllProxy  string `yaml:"all_proxy" json:"all_proxy"`
+	V3ApiKey string `yaml:"v3_key" json:"v3_key"`
+	V3Host   string `yaml:"v3_host" json:"v3_host"`
+	V4ApiKey string `yaml:"v4_key" json:"v4_key"`
+	V4Host   string `yaml:"v4_host" json:"v4_host"`
 }
 
 var (

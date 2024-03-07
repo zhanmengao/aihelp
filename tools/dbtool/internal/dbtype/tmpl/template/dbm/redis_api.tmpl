@@ -1,0 +1,205 @@
+package dbm
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"sort"
+
+	"forevernine.com/midplat/base_libs/xlog"
+	"forevernine.com/midplat/base_libs/zerocopy"
+	"forevernine.com/midplat/base_server/transport/fhttp"
+	"forevernine.com/midplat/base_server/transport/framework"
+	"github.com/gin-gonic/gin"
+)
+
+type GMResponse struct {
+	Code int         `json:"code"`
+	Msg  string      `json:"msg"`
+	Data interface{} `json:"data"`
+}
+
+// Init 初始化DB操作，注册HTTP路由
+func Init(hh *fhttp.Server) {
+	/**
+	 *	/adminserver/api/v1/dbm/operations
+	 *	get list
+	 *	req: {}
+	 *	rsp: {
+	 *		operations: [
+	 *			"FIM.GetDBChatMsgExt",
+	 *			"FIM.SetDBChatMsgExt",
+	 *			"FIM.SetEXDBChatMsgExt"
+	 *		]
+	 *	}
+	 */
+	hh.POST("", "/adminserver/api/v1/dbm/operations", "GetOperationList", opHanle(func(_ context.Context, _ []byte) (interface{}, error) {
+		list := GetOperations()
+		return list, nil
+	}))
+
+	/**
+	 *	/adminserver/api/v1/dbm/parameters
+	 *	get params
+	 *	req: {
+	 *		method: "FIM.SetEXDBChatMsgExt",
+	 *	}
+	 *	rsp: {
+	 *		params: [
+	 *			{ name: "data", type: "string"},
+	 *			{ name: "ttl", type: "int"}
+	 *		],
+	 *		example: ""
+	 *	}
+	 */
+	hh.POST("", "/adminserver/api/v1/dbm/parameters", "GetOperationParameter", opHanle(func(_ context.Context, body []byte) (ret interface{}, err error) {
+		req := struct{
+			Method string `json:"method"`
+		}{}
+		if err = json.Unmarshal(body, &req); err != nil {
+			return
+		}
+		method := req.Method
+		if method == "" {
+			err = errors.New("no method provided")
+			return
+		}
+		params, ok := GetParams(method)
+		if !ok {
+			err = fmt.Errorf("method '%s' doesn't exists", method)
+		}
+		ret = map[string]interface{}{
+			"params": params,
+			"example": func() string {
+				if meta, ok := operations[method]; ok {
+					return meta.example
+				}
+				return "{}"
+			}(),
+		}
+		return
+	}))
+
+	/**
+	 *	/adminserver/api/v1/dbm/do
+	 *	db operations
+	 *	req: {
+	 *		method: "FIM.GetDBChatMsgExt",
+	 *		params: "[{name: \"MsgID\", value: \"123456\"}]"
+	 *	}
+	 *	rsp: {
+	 *		data: "<json_encoded data>"
+	 *	}
+	 *
+	 *	req: {
+	 *		method: "FIM.SetEXDBChatMsgExt",
+	 *		params: [
+	 *			{name: "rdb_expire", value: "300"},
+	 *		],
+	 *		data: "{\"MsgID\": 123456, \"Ext\": \"\x01\x32\"}"
+	 *	}
+	 *	rsp: {
+	 *		data: ""
+	 *	}
+	 */
+	hh.POST("", "/adminserver/api/v1/dbm/do", "DoOperation", opHanle(func(ctx context.Context, body []byte) (ret interface{}, err error) {
+		req := &struct{
+			Method string `json:"method"`
+			Params string `json:"params"`
+			Data   string `json:"data"`
+		}{}
+		if err = json.Unmarshal(body, &req); err != nil {
+			return
+		}
+		method := req.Method
+		if method == "" {
+			err = errors.New("no method provided")
+			return
+		}
+		params := make(map[string]string, 4)
+		paramsRaw := make([]*ParamItem, 4)
+		if paramsStr := req.Params; paramsStr == "" {
+		} else if err = json.Unmarshal(zerocopy.StrToBytes(paramsStr), &paramsRaw); err != nil {
+			return
+		} else {
+			for _, item := range paramsRaw {
+				params[item.Name] = item.Value
+			}
+		}
+		ret, err = Do(ctx, method, params, req.Data)
+		return
+	}))
+}
+
+func opHanle(f func(ctx context.Context, body []byte) (interface{}, error)) func(*gin.Context) {
+	return func(ctx *gin.Context) {
+		var err error
+		defer func() {
+			if err != nil {
+				ctx.Set(framework.KeyNameError, err)
+			}
+		}()
+		//取出current ctx
+		c := framework.GetGinCurrentCtx(ctx)
+		if c == nil {
+			c = ctx
+		}
+		//获取编码
+		cf := framework.NewContentFormat(framework.ContentJson)
+		//获取body
+		var body []byte
+		if body = framework.GetBody(c); body != nil {
+		} else {
+			if body, err = ioutil.ReadAll(ctx.Request.Body); err != nil {
+				xlog.Errorf(c, "path: %s ReadAll err:%s ", ctx.FullPath(), err.Error())
+				return
+			}
+		}
+		rsp := &GMResponse{Code: 200}
+		data, err := f(ctx, body)
+		if err != nil {
+			rsp.Code = 999
+			rsp.Msg = err.Error()
+		}
+		rsp.Data = data
+		cf.Response(ctx, 200, rsp)
+		return
+	}
+}
+
+// GetOperations 获取DB操作列表
+func GetOperations() []string {
+	list := make([]string, 0, len(operations))
+	for k := range operations {
+		list = append(list, k)
+	}
+	var ss sort.StringSlice = list
+	sort.Sort(ss)
+	return list
+}
+
+// GetParams 获取DB操作参数
+func GetParams(op string) (params []ParamItem, ok bool) {
+	meta, ok := operations[op]
+	if !ok {
+		return
+	}
+	params = make([]ParamItem, 0, len(meta.Params))
+	for _, p := range meta.Params {
+		params = append(params, p)
+	}
+	return
+}
+
+// Do 执行DB操作
+func Do(ctx context.Context, op string, params map[string]string, data string) (ret string, err error) {
+	meta, ok := operations[op]
+	if !ok {
+		err = fmt.Errorf("no such operation[%s]", op)
+		return
+	}
+	params["data"] = data
+	return meta.do(ctx, meta, params)
+}

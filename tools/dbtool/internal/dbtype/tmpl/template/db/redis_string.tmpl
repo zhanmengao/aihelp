@@ -1,0 +1,184 @@
+
+func (p *{{.DBName}})get{{.StructName}}Database()*basedb.TStringStore[*pb.{{.StructName}}]{
+    return basedb.NewStringStore[*pb.{{.StructName}}](dbnames.{{.DBName}},key{{.StructName}},"{{.StructName}}")
+}
+
+// GetKey{{.StructName}} returns key of {{.StructName}}
+//
+// generated from "{{.SrcComment}}"
+func (p *{{.DBName}}) GetKey{{.StructName}}({{range .KeyParams}}{{.ParamName}} {{.ParamType}},{{end}}) string {
+	{{$paramCount := len .KeyParams}}{{if eq $paramCount 0 -}}
+	return key{{.StructName}}
+	{{else -}}
+	return fmt.Sprintf(key{{.StructName}}, {{range .KeyParams}}{{.ParamName}}, {{end}})
+	{{end -}}
+}
+
+// Get{{.StructName}} loads {{.StructName}} from `{{.DBName}}`
+//   data *pb.{{.StructName}} if every thing goes well.
+//   ok   bool is false if there is no data.
+//   err  error is not nil if there is something wrong except no data.
+//
+// prometheus metric: QPS, KeySize and OperationProcessTime
+//
+// generated from "{{.SrcComment}}"
+func (p *{{.DBName}}) Get{{.StructName}}(ctx context.Context, {{range .Params}}{{.ParamName}} {{.ParamType}},{{end}} opts ...*basedb.Options[*pb.{{.StructName}}]) (data *pb.{{.StructName}}, ok bool, err error) {
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}{{.ParamName}}, {{end}})
+	data = &pb.{{.StructName}}{}
+    db := p.get{{.StructName}}Database()
+    ok,err = db.Get(ctx,key,&data,opts...)
+    if !ok|| err!=nil{
+        {{range .Params -}}
+    	data.{{.ParamName}} = {{.ParamName}}
+    	{{end -}}
+    }
+    return
+}
+
+func (p *{{.DBName}}) Get{{.StructName}}WithSession(ctx context.Context, {{range .Params}}{{.ParamName}} {{.ParamType}},{{end}} opts ...*basedb.Options[*pb.{{.StructName}}]) (data *pb.{{.StructName}}, ok bool, err error) {
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}{{.ParamName}}, {{end}})
+	data = &pb.{{.StructName}}{}
+    db := p.get{{.StructName}}Database()
+    ok,err = db.GetFromSession(ctx,key,&data,opts...)
+    if !ok|| err!=nil{
+        {{range .Params -}}
+    	data.{{.ParamName}} = {{.ParamName}}
+    	{{end -}}
+    }
+    return
+}
+
+
+{{if .MultiMark -}}
+// MGet{{.StructName}} 
+//   data *pb.{{.StructName}}
+//   err  error any error when put data to database
+//
+// prometheus metric: QPS, KeySize and OperationProcessTime
+// 
+// generated from "{{.SrcComment}}"{{ $paramCount := len .Params }} {{$paramType := printf "params.%s" .StructName}}
+func (p *{{.DBName}}) {{if eq $paramCount 1}}{{ $param := index .Params 0 }}{{ $paramType = $param.ParamType -}}
+	MGet{{.StructName}}(ctx context.Context, ps []{{$paramType}})(data map[{{$paramType}}]*pb.{{.StructName}}, err error){{else -}}
+	MGet{{.StructName}}(ctx context.Context, ps []{{$paramType}})(data map[{{$paramType}}]*pb.{{.StructName}}, err error){{end}} {
+	const command = "MGET"
+	keys := make([]string, 0, len(ps))
+	for _, v := range ps {
+		{{if eq $paramCount 1 -}}
+		keys = append(keys, p.GetKey{{.StructName}}(v))
+		{{else -}}
+		keys = append(keys, p.GetKey{{.StructName}}({{range .KeyParams}}v.{{.ParamName}}, {{end}}))
+		{{end -}}
+	}
+	ret, err := p.mget{{.StructName}}(ctx, keys)
+	if err != nil {
+		return
+	}
+	data = make(map[{{$paramType}}]*pb.{{.StructName}}, len(ret))
+	for i, du := range ret {
+		data[ps[i]] = du
+	}
+	return
+}
+
+func (p *{{.DBName}}) mget{{.StructName}}(ctx context.Context, keys []string) (data []*pb.{{.StructName}}, err error) {
+	const command = "MGET"
+	rdb := basedb.NewRedisClient(dbnames.{{.DBName}})
+	data = make([]*pb.{{.StructName}}, 0, len(keys))
+	bsList, err := rdb.MGet(keys...)
+	if err != nil {
+		return
+	}
+	for _, bs := range bsList {
+		res := &pb.{{.StructName}}{}
+		if err = res.Unmarshal(bs); err != nil {
+			return
+		}
+		data = append(data, res)
+	}
+	return
+}
+{{end -}}
+
+// Set{{.StructName}} saves {{.StructName}} to `{{.DBName}}`
+//   err error any error when put data to database
+//
+// prometheus metric: QPS, KeySize and OperationProcessTime
+//
+// generated from "{{.SrcComment}}"
+func (p *{{.DBName}}) Set{{.StructName}}(ctx context.Context, data *pb.{{.StructName}}) (err error) {
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}data.{{.ParamName}}, {{end}})
+    db := p.get{{.StructName}}Database()
+    return db.Set(ctx,key,data)
+}
+
+
+
+func (p *{{.DBName}}) Set{{.StructName}}WithSess(ctx context.Context, data *pb.{{.StructName}}) (err error) {
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}data.{{.ParamName}}, {{end}})
+    db := p.get{{.StructName}}Database()
+    return db.SetWithSess(ctx,key,data)
+}
+
+// SetEX{{.StructName}} saves {{.StructName}} to `{{.DBName}}` with TTL
+//   data *pb.{{.StructName}}
+//   ttl  int data live seconds
+//   err  error any error when put data to database
+//
+// prometheus metric: QPS, KeySize and OperationProcessTime
+// 
+// generated from "{{.SrcComment}}"
+func (p *{{.DBName}}) SetEX{{.StructName}}(ctx context.Context, data *pb.{{.StructName}}, ttl int)(err error) {
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}data.{{.ParamName}}, {{end}})
+    db := p.get{{.StructName}}Database()
+    return db.SetEX(ctx,key,data,ttl)
+}
+
+func (p *{{.DBName}}) SetEX{{.StructName}}WithSess(ctx context.Context, data *pb.{{.StructName}}, ttl int) (err error) {
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}data.{{.ParamName}}, {{end}})
+    db := p.get{{.StructName}}Database()
+    return db.SetEXWithSession(ctx,key,data,ttl)
+}
+
+{{if .MultiMark -}}
+// MSet{{.StructName}}
+//   err error any error when put data to database
+//
+// prometheus metric: QPS, KeySize and OperationProcessTime
+// 
+// generated from "{{.SrcComment}}"
+func (p *{{.DBName}}) MSet{{.StructName}}(ctx context.Context, data []*pb.{{.StructName}}) (err error) {
+	const command = "MSET"
+	err = p.mset{{.StructName}}(ctx, data)
+	return
+}
+
+func (p *{{.DBName}}) mset{{.StructName}}(ctx context.Context, data []*pb.{{.StructName}}) (err error) {
+	const command = "MSET"
+	vals := make([]interface{}, 0, 2*len(data))
+	for _, du := range data {
+		var bs []byte
+		bs, err = du.Marshal()
+		if err != nil {
+			return
+		}
+		key := p.GetKey{{.StructName}}({{range .KeyParams}}du.{{.ParamName}}, {{end}})
+		vals = append(vals, key)
+		vals = append(vals, bs)
+	}
+	rdb := basedb.NewRedisClient(dbnames.{{.DBName}})
+	err = rdb.MSet(vals...)
+	return
+}
+{{end -}}
+
+// Delete{{.StructName}} delete {{.StructName}} from `{{.DBName}}`
+//   err  error any error when put data to database
+//
+// prometheus metric: QPS and OperationProcessTime
+//
+// generated from "{{.SrcComment}}"
+func(p *{{.DBName}})Delete{{.StructName}}(ctx context.Context, {{range .Params}}{{.ParamName}} {{.ParamType}},{{end}})(ok bool, err error){
+	key := p.GetKey{{.StructName}}({{range .KeyParams}}{{.ParamName}}, {{end}})
+    db := p.get{{.StructName}}Database()
+    return db.Delete(ctx,key)
+}
