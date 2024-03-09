@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"github.com/gogf/gf/v2/frame/g"
-	framework "github.com/zhanmengao/gf/context"
 	"time"
 )
 
@@ -30,7 +29,7 @@ func (p *TStringStore[T]) Get(ctx context.Context, key string, pData *T, opts ..
 }
 
 func (p *TStringStore[T]) get(ctx context.Context, key string, pData *T, opts ...*Options[T]) (ok bool, err error) {
-	cacheKey := framework.CacheKeyPrefix + key
+	cacheKey := CacheKeyPrefix + key
 	//context有，直接返回
 	data, ok := ctx.Value(cacheKey).(T)
 	if ok {
@@ -62,17 +61,17 @@ func (p *TStringStore[T]) get(ctx context.Context, key string, pData *T, opts ..
 }
 
 func (p *TStringStore[T]) GetFromSession(ctx context.Context, key string, data *T, opts ...*Options[T]) (ok bool, err error) {
-	sess, exist := framework.GetSession(ctx)
+	var exist bool
 	if !exist {
 		ok, err = p.Get(ctx, key, data, opts...)
 	} else {
-		_, ok, err = p.getFromCache(ctx, sess, key, data, opts...)
+		_, ok, err = p.getFromCache(ctx, nil, key, data, opts...)
 	}
 	return
 }
 
 func (p *TStringStore[T]) getFromCache(ctx context.Context, c ICache, key string, data *T, opts ...*Options[T]) (withCache, ok bool, err error) {
-	cacheKey := framework.CacheKeyPrefix + key
+	cacheKey := CacheKeyPrefix + key
 	obj, ok := c.GetFromCache(ctx, cacheKey)
 	if ok {
 		var cache T
@@ -117,23 +116,16 @@ func (p *TStringStore[T]) set(ctx context.Context, key string, data T) (err erro
 	_, err = rdb.Set(ctx, key, bs)
 	ObserveDurationMS(command, p.keyFormat, "", time.Since(opStart), err)
 	if err == nil {
-		//更新到ctx
-		cacheKey := framework.CacheKeyPrefix + key
-		framework.SetContextValue(ctx, cacheKey, data)
+		//TODO 更新到ctx
 	}
 	return
 }
 
 func (p *TStringStore[T]) SetWithSess(ctx context.Context, key string, data T) (err error) {
-	var isCache bool
+	//var isCache bool
 	err = p.set(ctx, key, data)
 	if err != nil {
 		return
-	}
-	sess, isCache := framework.GetSession(ctx)
-	if isCache {
-		cacheKey := framework.CacheKeyPrefix + key
-		sess.SetToCache(ctx, cacheKey, data)
 	}
 	return
 }
@@ -156,23 +148,16 @@ func (p *TStringStore[T]) setEX(ctx context.Context, key string, data T, ttl int
 	err = rdb.SetEX(ctx, key, bs, int64(ttl))
 	ObserveDurationMS(command, p.keyFormat, "", time.Since(opStart), err)
 	if err == nil {
-		//更新到ctx
-		cacheKey := framework.CacheKeyPrefix + key
-		framework.SetContextValue(ctx, cacheKey, data)
+		//TODO 更新到ctx
 	}
 	return
 }
 
 func (p *TStringStore[T]) SetEXWithSession(ctx context.Context, key string, data T, ttl int) (err error) {
-	var isCache bool
+	//var isCache bool
 	err = p.setEX(ctx, key, data, ttl)
 	if err != nil {
 		return
-	}
-	sess, isCache := framework.GetSession(ctx)
-	if isCache {
-		cacheKey := framework.CacheKeyPrefix + key
-		sess.SetToCacheTTL(ctx, cacheKey, data, ttl)
 	}
 	return
 }

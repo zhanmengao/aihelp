@@ -33,15 +33,15 @@ func init() {
 	DBTool.Flags().StringVar(&d.protoDir, "d", ".", "proto仓库目录")
 	DBTool.Flags().StringVar(&d.pbPackagePath, "p", "", "pb的package name")
 	DBTool.Flags().StringVar(&d.genPackage, "gen", "", "gen的package name")
-	DBTool.Flags().StringVar(&d.outputDir, "o", "go", "db.go输出目录")
+	DBTool.Flags().StringVar(&d.outputDir, "o", "", "db.go输出目录")
 	DBTool.Flags().StringVar(&d.pbGoDir, "go", "", ".pb.go目录")
 	DBTool.Flags().StringVar(&d.buildTag, "build", "", "build tag")
-	DBTool.Flags().StringVar(&d.tableProto, "table", "table.proto", "table.proto")
+	DBTool.Flags().StringVar(&d.tableProto, "table", "db.proto", "table.proto")
 }
 
 func (d *GenDBCode) Execute(cmd *cobra.Command, args []string) {
 	if d.pbGoDir == "" {
-		d.pbGoDir = path.Join(d.protoDir, "go", "pb")
+		d.pbGoDir = path.Join(d.protoDir, "pb")
 	}
 	if d.pbPackagePath == "" {
 		tableProto := path.Join(d.protoDir, "proto", d.tableProto)

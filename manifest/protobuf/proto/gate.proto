@@ -1,3 +1,39 @@
 syntax = "proto3";
 package zhanmengao.aihelp.proto;
 option  go_package = "github.com/zhanmengao/aihelp/manifest/protobuf/pb";
+
+// PacketHead PB的packet头部
+message PacketHead {
+  int32               Cmd            = 1;   // 命令字， request为奇数， response与notify为偶数
+  int32               Seq            = 2;   // 序列号： response的seq 为request +1, notify 的seq为0
+  int64               Time           = 3;   // server timestamp(millisecond)
+  int64               Opts           = 4;   // 一些控制标志，暂时未使用
+  string              RKey           = 10;  // route key：用于类似PVP玩法的房间ID
+  string              ClientVer      = 11;  // server field
+  string              ClientIP       = 12;  // server field
+  int32               Mod            = 13;  // server field
+  string              ReqId          = 14;  // server field: request id
+  bool                Event          = 15;  // server, packet is a server internal event
+  string              ClientRevision = 16;  // 客户端热更新版本号
+  uint64              FlowID         = 17;  // 用于服务器内部通信的请求响应ID
+  bytes               Reserved       = 18;  // 预留字段
+  string              UID            = 20;  // 玩家UID
+  map<string, string> MetaData       = 22;
+  bool                UseTrace       = 23;
+  //安全网络
+  int64 SendID    = 25;  //本端发送的序列号（填自己当前的）：每次发包+1，不与对端关联
+  int64 AckPeerID = 26;  //我当前的确认号（填自己当前的）：我收到最大的是多少，和自己无关
+}
+
+// Packet 网络层收到的一个帧格式为Packet结构
+message Packet {
+  PacketHead Head = 1;
+  bytes      Body = 2;
+}
+
+// RspHead 作为Response的一个通用字段
+message RspHead {
+  int32  Code    = 1;  // 业务的错误码
+  string Msg     = 2;  // 主要用于前端debug
+  int32  SubCode = 3;  // 一些业务中使用的子错误码：例如SDK错误码
+}

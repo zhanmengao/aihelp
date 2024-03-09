@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"github.com/gogf/gf/v2/frame/g"
-	framework "github.com/zhanmengao/gf/context"
 	"time"
 )
 
@@ -32,7 +31,7 @@ func (p *THashStore[T]) Get(ctx context.Context, key, field string, pData *T, op
 }
 
 func (p *THashStore[T]) get(ctx context.Context, key, field string, pData *T, opts ...*Options[T]) (ok bool, err error) {
-	cacheKey := framework.CacheKeyPrefix + key + field
+	cacheKey := CacheKeyPrefix + key + field
 	//context有，直接返回
 	data, ok := ctx.Value(cacheKey).(T)
 	if ok {
@@ -65,18 +64,18 @@ func (p *THashStore[T]) get(ctx context.Context, key, field string, pData *T, op
 }
 
 func (p *THashStore[T]) GetFromSession(ctx context.Context, key, field string, data *T, opts ...*Options[T]) (ok bool, err error) {
-	sess, exist := framework.GetSession(ctx)
+	var exist bool
 	if !exist {
 		//Session不存在，走DB
 		ok, err = p.get(ctx, key, field, data, opts...)
 	} else {
-		_, ok, err = p.getFromCache(ctx, sess, key, field, data, opts...)
+		_, ok, err = p.getFromCache(ctx, nil, key, field, data, opts...)
 	}
 	return
 }
 
 func (p *THashStore[T]) getFromCache(ctx context.Context, c ICache, key, field string, data *T, opts ...*Options[T]) (withCache, ok bool, err error) {
-	cacheKey := framework.CacheKeyPrefix + key + field
+	cacheKey := CacheKeyPrefix + key + field
 	obj, ok := c.GetFromCache(ctx, cacheKey)
 	if ok {
 		var cache T
@@ -124,23 +123,23 @@ func (p *THashStore[T]) set(ctx context.Context, key, field string, data T) (err
 	})
 	ObserveDurationMS(command, p.keyFormat, p.fieldFormat, time.Since(opStart), err)
 	if err == nil {
-		//更新到ctx
-		cacheKey := framework.CacheKeyPrefix + key + field
-		framework.SetContextValue(ctx, cacheKey, data)
+		//TODO 更新到ctx
+		//cacheKey := CacheKeyPrefix + key + field
+		//framework.SetContextValue(ctx, cacheKey, data)
 	}
 	return
 }
 
 func (p *THashStore[T]) SetWithSess(ctx context.Context, key, field string, data T) (err error) {
-	var cache bool
+	//var cache bool
 	if err = p.set(ctx, key, field, data); err != nil {
 		return
 	}
-	sess, cache := framework.GetSession(ctx)
-	if cache {
-		cacheKey := framework.CacheKeyPrefix + key + field
-		sess.SetToCache(ctx, cacheKey, data)
-	}
+	//sess, cache := framework.GetSession(ctx)
+	//if cache {
+	//	cacheKey := framework.CacheKeyPrefix + key + field
+	//	sess.SetToCache(ctx, cacheKey, data)
+	//}
 	return
 }
 

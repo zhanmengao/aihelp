@@ -3,7 +3,9 @@ package gen
 import (
 	"bytes"
 	"fmt"
-	"forevernine.com/midplat/base_server/tools/f9/dbtool/internal/dbtype/tmpl"
+	"github.com/zhanmengao/aihelp/tools/dbtool/internal/dbtype/gmysql"
+	"github.com/zhanmengao/aihelp/tools/dbtool/internal/dbtype/gredis"
+	"github.com/zhanmengao/aihelp/tools/dbtool/internal/dbtype/tmpl"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -12,9 +14,6 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-
-	"forevernine.com/midplat/base_server/tools/f9/dbtool/internal/dbtype/gmysql"
-	"forevernine.com/midplat/base_server/tools/f9/dbtool/internal/dbtype/gredis"
 )
 
 type DBMeta struct {

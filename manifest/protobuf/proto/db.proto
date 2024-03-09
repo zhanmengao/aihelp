@@ -2,4 +2,11 @@ syntax = "proto3";
 package zhanmengao.aihelp.proto;
 option  go_package = "github.com/zhanmengao/aihelp/manifest/protobuf/pb";
 
-message DBUserMessage
+import "struct.proto";
+
+//@db:hash|Pika|DBUserMessage:%s,UID|Session:%s,SessionKey
+message DBUserMessage{
+  string UID = 1;
+  string SessionKey = 2;
+  repeated UserMessage Message = 3;
+}

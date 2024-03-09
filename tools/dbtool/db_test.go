@@ -1,10 +1,9 @@
 package dbtool
 
 import (
+	"github.com/zhanmengao/aihelp/tools/dbtool/internal/gen"
 	"path"
 	"testing"
-
-	"forevernine.com/midplat/base_server/tools/f9/dbtool/internal/gen"
 )
 
 func TestDB(t *testing.T) {

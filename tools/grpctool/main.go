@@ -1,4 +1,4 @@
-package main
+package Run
 
 import (
 	"flag"
@@ -6,18 +6,20 @@ import (
 	"google.golang.org/protobuf/types/pluginpb"
 )
 
-func main() {
+func Run(f func(plug *protogen.Plugin) error) {
 	flag.Parse()
 	protogen.Options{
 		ParamFunc: flag.CommandLine.Set,
-	}.Run(func(gen *protogen.Plugin) error {
-		gen.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
-		for _, f := range gen.Files {
-			if !f.Generate {
-				continue
-			}
-			//generateFile(gen, f, *omitempty, *buildTag)
+	}.Run(f)
+}
+
+func DefaultRun(plug *protogen.Plugin) error {
+	plug.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
+	for _, f := range plug.Files {
+		if !f.Generate {
+			continue
 		}
-		return nil
-	})
+		//generateFile(gen, f, *omitempty, *buildTag)
+	}
+	return nil
 }

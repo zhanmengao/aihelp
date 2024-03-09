@@ -2,7 +2,9 @@ package v35
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/os/glog"
 	"github.com/sashabaranov/go-openai"
+	"github.com/zhanmengao/aihelp/global"
 	"github.com/zhanmengao/aihelp/module/gpt/client"
 )
 
@@ -11,10 +13,14 @@ type TGpt35 struct {
 	SessionKey string
 }
 
-func (p *TGpt35) SendMessage(ctx context.Context, msg []byte) (err error) {
-	//TODO 读出当前会话上下文
+func (p *TGpt35) SendMessage(ctx context.Context, defaultMsg, userContent string) (err error) {
+	//读出当前会话上下文
+	dbMsg, _, err := global.PikaDB.GetDBUserMessage(ctx, p.UID, p.SessionKey)
+	if err != nil {
+		return
+	}
 	cli := client.NewV3Client()
-	resp, err := cli.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
+	req := openai.ChatCompletionRequest{
 		Model:            "",
 		Messages:         nil,
 		MaxTokens:        4096,
@@ -33,9 +39,43 @@ func (p *TGpt35) SendMessage(ctx context.Context, msg []byte) (err error) {
 		User:             "",
 		Tools:            nil,
 		ToolChoice:       nil,
+	}
+	for _, msg := range dbMsg.Message {
+		req.Messages = append(req.Messages, openai.ChatCompletionMessage{
+			Role:         msg.Role,
+			Content:      msg.Message,
+			MultiContent: nil,
+			Name:         "",
+			FunctionCall: nil,
+			ToolCalls:    nil,
+			ToolCallID:   "",
+		})
+	}
+	//如果为空，设置默认msg
+	if len(dbMsg.Message) <= 0 {
+		req.Messages = append(req.Messages, openai.ChatCompletionMessage{
+			Role:         "system",
+			Content:      defaultMsg,
+			MultiContent: nil,
+			Name:         "",
+			FunctionCall: nil,
+			ToolCalls:    nil,
+			ToolCallID:   "",
+		})
+	}
+	req.Messages = append(req.Messages, openai.ChatCompletionMessage{
+		Role:         "user",
+		Content:      userContent,
+		MultiContent: nil,
+		Name:         "",
+		FunctionCall: nil,
+		ToolCalls:    nil,
+		ToolCallID:   "",
 	})
+	resp, err := cli.CreateChatCompletion(ctx, req)
 	if err != nil {
 		return
 	}
+	glog.Debugf(ctx, "gpt rsp [%+v]", resp)
 	return
 }

@@ -4,7 +4,7 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/glog"
-	"github.com/zhanmengao/gf/proto/go/pb"
+	"github.com/zhanmengao/aihelp/manifest/protobuf/pb"
 )
 
 type Client struct {

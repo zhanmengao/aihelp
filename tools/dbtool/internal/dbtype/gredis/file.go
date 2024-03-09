@@ -2,6 +2,7 @@ package gredis
 
 import (
 	"bytes"
+	"github.com/zhanmengao/aihelp/tools/dbtool/internal/dbtype/tmpl"
 	"go/format"
 	"io"
 	"io/ioutil"
@@ -9,9 +10,6 @@ import (
 	"os"
 	"path"
 	"text/template"
-
-	"forevernine.com/midplat/base_libs/zerocopy"
-	"forevernine.com/midplat/base_server/tools/f9/dbtool/internal/dbtype/tmpl"
 )
 
 // mkDirAll clear all files in rootDir and create the dir tree:
@@ -28,9 +26,9 @@ func mkDirAll(rootDir string) error {
 	if err := os.RemoveAll(rootDir); err != nil && os.IsNotExist(err) {
 		return err
 	}
-	if err := os.MkdirAll(path.Join(rootDir, "dbm"), 0755); err != nil && os.IsExist(err) {
-		return err
-	}
+	//if err := os.MkdirAll(path.Join(rootDir, "dbm"), 0755); err != nil && os.IsExist(err) {
+	//	return err
+	//}
 	if err := os.MkdirAll(path.Join(rootDir, "dbnames"), 0755); err != nil && os.IsExist(err) {
 		return err
 	}
@@ -86,7 +84,7 @@ func genFileTmpl(tmpl *template.Template, outputFile string, params interface{},
 func genWriterTmpl(tmpl *template.Template, w io.Writer, params interface{}, head, tail []byte) (err error) {
 	if len(head) > 0 {
 		if _, err = w.Write(head); err != nil {
-			log.Println("[Error] write file head:", err.Error(), ">>>\n", zerocopy.BtsToString(head))
+			log.Println("[Error] write file head:", err.Error(), ">>>\n", string(head))
 			return
 		}
 	}
@@ -96,7 +94,7 @@ func genWriterTmpl(tmpl *template.Template, w io.Writer, params interface{}, hea
 	}
 	if len(tail) > 0 {
 		if _, err = w.Write(tail); err != nil {
-			log.Println("[Error] write file tail:", err.Error(), ">>>\n", zerocopy.BtsToString(tail))
+			log.Println("[Error] write file tail:", err.Error(), ">>>\n", string(tail))
 			return
 		}
 	}

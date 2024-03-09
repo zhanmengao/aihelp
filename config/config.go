@@ -8,13 +8,6 @@ import (
 	"github.com/gogf/gf/v2/os/glog"
 )
 
-type TGptConfig struct {
-	V3ApiKey string `yaml:"v3_key" json:"v3_key"`
-	V3Host   string `yaml:"v3_host" json:"v3_host"`
-	V4ApiKey string `yaml:"v4_key" json:"v4_key"`
-	V4Host   string `yaml:"v4_host" json:"v4_host"`
-}
-
 var (
 	GptConfig TGptConfig
 	yCfg      *gcfg.Config

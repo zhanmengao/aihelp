@@ -3,17 +3,16 @@ package gredis
 import (
 	"bytes"
 	"fmt"
+	"forevernine.com/midplat/base_libs/errors"
+	"github.com/zhanmengao/aihelp/tools/dbtool/internal/dbtype/gredis/internal/ghash"
+	"github.com/zhanmengao/aihelp/tools/dbtool/internal/dbtype/gredis/internal/gredistyp"
+	"github.com/zhanmengao/aihelp/tools/dbtool/internal/dbtype/gredis/internal/gstring"
+	"github.com/zhanmengao/aihelp/tools/dbtool/internal/dbtype/tmpl"
 	"io"
 	"log"
 	"path"
 	"strings"
 	"text/template"
-
-	"forevernine.com/midplat/base_libs/errors"
-	"forevernine.com/midplat/base_server/tools/f9/dbtool/internal/dbtype/gredis/internal/ghash"
-	"forevernine.com/midplat/base_server/tools/f9/dbtool/internal/dbtype/gredis/internal/gredistyp"
-	"forevernine.com/midplat/base_server/tools/f9/dbtool/internal/dbtype/gredis/internal/gstring"
-	"forevernine.com/midplat/base_server/tools/f9/dbtool/internal/dbtype/tmpl"
 )
 
 type RedisGenerate struct {
@@ -101,19 +100,19 @@ func (r *RedisGenerate) End() {
 		genFileTmplName("redis_factory.tmpl", path.Join(r.outputDir, "factory.db.go"), fullParams)
 
 		// dbm
-		genFileTmplName("dbm/redis_api.tmpl", path.Join(r.outputDir, "dbm", "redis_api.dbm.go"), nil)
-		genFileTmplName("dbm/redis_meta.tmpl", path.Join(r.outputDir, "dbm", "redis_meta.dbm.go"), fullParams)
-		genFileTmplName("dbm/redis_parse_util.tmpl", path.Join(r.outputDir, "dbm", "redis_parse_util.dbm.go"), nil)
-		genFileTmplName("dbm/redis_fill_util.tmpl", path.Join(r.outputDir, "dbm", "redis_fill_util.dbm.go"), nil)
-		genFileTmplName("dbm/redis_fill_util_low.tmpl", path.Join(r.outputDir, "dbm", "redis_fill_util_low.dbm.go"), nil)
-		for _, eachDB := range r.redisDBs {
-			fileName := fmt.Sprintf("redis_%s_wrapper.dbm.go", strings.ToLower(eachDB.Key))
-			genFileTmplName("dbm/redis_wrapper.tmpl", path.Join(r.outputDir, "dbm", fileName), map[string]interface{}{
-				"PbPkgPath":  r.pbPkgPath,
-				"GenPkgPath": r.genPkgPath,
-				"Slice":      eachDB.Slice,
-			})
-		}
+		//genFileTmplName("dbm/redis_api.tmpl", path.Join(r.outputDir, "dbm", "redis_api.dbm.go"), nil)
+		//genFileTmplName("dbm/redis_meta.tmpl", path.Join(r.outputDir, "dbm", "redis_meta.dbm.go"), fullParams)
+		//genFileTmplName("dbm/redis_parse_util.tmpl", path.Join(r.outputDir, "dbm", "redis_parse_util.dbm.go"), nil)
+		//genFileTmplName("dbm/redis_fill_util.tmpl", path.Join(r.outputDir, "dbm", "redis_fill_util.dbm.go"), nil)
+		//genFileTmplName("dbm/redis_fill_util_low.tmpl", path.Join(r.outputDir, "dbm", "redis_fill_util_low.dbm.go"), nil)
+		//for _, eachDB := range r.redisDBs {
+		//	fileName := fmt.Sprintf("redis_%s_wrapper.dbm.go", strings.ToLower(eachDB.Key))
+		//	genFileTmplName("dbm/redis_wrapper.tmpl", path.Join(r.outputDir, "dbm", fileName), map[string]interface{}{
+		//		"PbPkgPath":  r.pbPkgPath,
+		//		"GenPkgPath": r.genPkgPath,
+		//		"Slice":      eachDB.Slice,
+		//	})
+		//}
 	}
 	genFileTmplName("dbnames.tmpl", path.Join(r.outputDir, "dbnames", "dbnames.db.go"), r.dbNames)
 	genFileTmplName("cache.tmpl", path.Join(r.outputDir, "cache", "cache.db.go"), nil)
