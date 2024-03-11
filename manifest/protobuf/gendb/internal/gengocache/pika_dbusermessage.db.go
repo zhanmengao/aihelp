@@ -62,7 +62,9 @@ func (p *Pika) SetEXDBUserMessageWithSess(ctx context.Context, data *pb.DBUserMe
 }
 
 // DeleteDBUserMessage is generated from "//@db:hash|Pika|DBUserMessage:%s,UID|Session:%s,SessionKey"
-//   err  error any error when put data to database
+//
+//	err  error any error when put data to database
+//
 // if monitor is enabled on init this operation records prometheus
 // metric: QPS and OperationProcessTime
 func (p *Pika) DeleteDBUserMessage(ctx context.Context, UID string, SessionKey string) (ok bool, err error) {

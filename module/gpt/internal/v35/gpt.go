@@ -1,11 +1,17 @@
 package v35
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"fmt"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/glog"
 	"github.com/sashabaranov/go-openai"
+	"github.com/zhanmengao/aihelp/config"
 	"github.com/zhanmengao/aihelp/global"
-	"github.com/zhanmengao/aihelp/module/gpt/client"
+	"io/ioutil"
+	"net/http"
 )
 
 type TGpt35 struct {
@@ -19,26 +25,26 @@ func (p *TGpt35) SendMessage(ctx context.Context, defaultMsg, userContent string
 	if err != nil {
 		return
 	}
-	cli := client.NewV3Client()
+	//cli := client.NewV3Client()
 	req := openai.ChatCompletionRequest{
-		Model:            "",
-		Messages:         nil,
-		MaxTokens:        4096,
-		Temperature:      0,
-		TopP:             0,
-		N:                0,
-		Stream:           false,
-		Stop:             nil,
-		PresencePenalty:  0,
-		ResponseFormat:   nil,
-		Seed:             nil,
-		FrequencyPenalty: 0,
-		LogitBias:        nil,
-		LogProbs:         false,
-		TopLogProbs:      0,
-		User:             "",
-		Tools:            nil,
-		ToolChoice:       nil,
+		Model:    openai.GPT3Dot5Turbo,
+		Messages: nil,
+		//MaxTokens:        4096,
+		//Temperature:      0.5,
+		//TopP:             0,
+		//N:                1,
+		//Stream:           false,
+		//Stop:             nil,
+		//PresencePenalty:  0,
+		//ResponseFormat:   nil,
+		//Seed:             nil,
+		//FrequencyPenalty: 0,
+		//LogitBias:        nil,
+		//LogProbs:         false,
+		//TopLogProbs:      0,
+		//User:             "",
+		//Tools:            nil,
+		//ToolChoice:       nil,
 	}
 	for _, msg := range dbMsg.Message {
 		req.Messages = append(req.Messages, openai.ChatCompletionMessage{
@@ -72,10 +78,24 @@ func (p *TGpt35) SendMessage(ctx context.Context, defaultMsg, userContent string
 		ToolCalls:    nil,
 		ToolCallID:   "",
 	})
-	resp, err := cli.CreateChatCompletion(ctx, req)
+	u := fmt.Sprintf("%s/%s", config.GptConfig.V3Host, "v1/chat/completions")
+	body, _ := json.Marshal(req)
+	httpReq, err := http.NewRequest(http.MethodPost, u, bytes.NewBuffer(body))
 	if err != nil {
 		return
 	}
-	glog.Debugf(ctx, "gpt rsp [%+v]", resp)
+	httpReq.Header.Set("Content-Type", "application/json")
+	httpReq.Header.Set("Authorization", fmt.Sprintf("Bearer %s", config.GptConfig.V3ApiKey))
+	resp, err := g.Client().Do(httpReq)
+	//resp, err := cli.CreateChatCompletion(ctx, req)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	rsp, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+	glog.Debugf(ctx, "gpt rsp [%+v]", string(rsp))
 	return
 }
