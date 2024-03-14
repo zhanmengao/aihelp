@@ -40,7 +40,7 @@ type PacketHead struct {
 	UID            string            `protobuf:"bytes,20,opt,name=UID,proto3" json:"UID,omitempty"`
 	MetaData       map[string]string `protobuf:"bytes,22,rep,name=MetaData,proto3" json:"MetaData,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	UseTrace       bool              `protobuf:"varint,23,opt,name=UseTrace,proto3" json:"UseTrace,omitempty"`
-	//安全网络
+	// 安全网络
 	SendID               int64    `protobuf:"varint,25,opt,name=SendID,proto3" json:"SendID,omitempty"`
 	AckPeerID            int64    `protobuf:"varint,26,opt,name=AckPeerID,proto3" json:"AckPeerID,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`

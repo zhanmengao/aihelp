@@ -1,0 +1,11 @@
+syntax = "proto3";
+package zhanmengao.aihelp.proto;
+option  go_package = "github.com/zhanmengao/aihelp/manifest/protobuf/pb";
+
+
+enum CosPlayRole{
+  CosPlayRoleInit = 0;
+  CosPlayBoyFriend = 1;//男朋友
+  CosPlayGirlFriend = 2;//女朋友
+  CosPlayCat = 3;//肥特
+}

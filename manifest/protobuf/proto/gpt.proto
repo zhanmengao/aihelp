@@ -1,0 +1,47 @@
+syntax = "proto3";
+package zhanmengao.aihelp.proto;
+option  go_package = "github.com/zhanmengao/aihelp/manifest/protobuf/pb";
+
+import "struct.proto";
+import "gate.proto";
+import "enum.proto";
+
+message GptMessageResponse{
+  string id = 1;
+  string object = 2;
+  int64 created = 3;
+  repeated GptChoices choices = 4;
+}
+
+message GptChoices{
+  int64 index = 1;
+    GptMessage message = 2;
+}
+
+//获取交流历史
+message GetHistoryReq{
+}
+message GetHistoryRsp{
+  RspHead Head = 1;
+
+}
+
+
+//书评 / 概要
+message ReadBookReq{
+  string BookName = 1;
+}
+message ReadBookRsp{
+  RspHead Head = 1;
+  repeated GptMessage Message = 2;//回复
+}
+
+
+//扮演某些角色
+message CosPlayReq{
+    CosPlayRole RoleType = 1;
+    string RoleDesc = 2;//角色描述
+}
+message CosPlayRsp{
+  RspHead Head = 1;
+}

@@ -4,9 +4,15 @@ option  go_package = "github.com/zhanmengao/aihelp/manifest/protobuf/pb";
 
 import "struct.proto";
 
-//@db:hash|Pika|DBUserMessage:%s,UID|Session:%s,SessionKey
+//@db:hash|Pika|DBUser:%s,UID|DBUserMessage
 message DBUserMessage{
   string UID = 1;
+  repeated ChatDescription Description = 2;
+}
+
+//@db:hash|Pika|DBUser:%s,UID|DBChatSession:%s,SessionKey
+message DBChatSession{
+  string UID = 1;
   string SessionKey = 2;
-  repeated UserMessage Message = 3;
+  repeated GptMessage Message = 3;
 }

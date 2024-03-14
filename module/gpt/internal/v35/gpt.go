@@ -10,6 +10,7 @@ import (
 	"github.com/sashabaranov/go-openai"
 	"github.com/zhanmengao/aihelp/config"
 	"github.com/zhanmengao/aihelp/global"
+	"github.com/zhanmengao/aihelp/manifest/protobuf/pb"
 	"io/ioutil"
 	"net/http"
 )
@@ -19,7 +20,7 @@ type TGpt35 struct {
 	SessionKey string
 }
 
-func (p *TGpt35) SendMessage(ctx context.Context, defaultMsg, userContent string) (err error) {
+func (p *TGpt35) SendMessage(ctx context.Context, defaultMsg, userContent string) (retMsg string, err error) {
 	//读出当前会话上下文
 	dbMsg, _, err := global.PikaDB.GetDBUserMessage(ctx, p.UID, p.SessionKey)
 	if err != nil {
@@ -49,7 +50,7 @@ func (p *TGpt35) SendMessage(ctx context.Context, defaultMsg, userContent string
 	for _, msg := range dbMsg.Message {
 		req.Messages = append(req.Messages, openai.ChatCompletionMessage{
 			Role:         msg.Role,
-			Content:      msg.Message,
+			Content:      msg.Content,
 			MultiContent: nil,
 			Name:         "",
 			FunctionCall: nil,
@@ -92,10 +93,22 @@ func (p *TGpt35) SendMessage(ctx context.Context, defaultMsg, userContent string
 		return
 	}
 	defer resp.Body.Close()
-	rsp, err := ioutil.ReadAll(resp.Body)
+	body, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return
 	}
-	glog.Debugf(ctx, "gpt rsp [%+v]", string(rsp))
+	//解析
+	rsp := &pb.GptMessageResponse{}
+	if err = json.Unmarshal(body, rsp); err != nil {
+		return
+	}
+	rspMsg := rsp.Choices[0].Message
+	//回写
+	dbMsg.Message = append(dbMsg.Message, rspMsg)
+	if err = global.PikaDB.SetDBUserMessage(ctx, dbMsg); err != nil {
+		return
+	}
+	glog.Debugf(ctx, "gpt rsp [%+v]", string(body))
+	retMsg = rspMsg.Content
 	return
 }

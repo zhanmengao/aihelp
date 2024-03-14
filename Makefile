@@ -10,9 +10,10 @@ tool:
 	make db
 
 pb:
-	protoc --proto_path=manifest/protobuf/proto --gogofast_out=paths=source_relative:manifest/protobuf/pb manifest/protobuf/proto/gate.proto
-	protoc --proto_path=manifest/protobuf/proto --gogofast_out=paths=source_relative:manifest/protobuf/pb manifest/protobuf/proto/db.proto
-	protoc --proto_path=manifest/protobuf/proto --gogofast_out=paths=source_relative:manifest/protobuf/pb manifest/protobuf/proto/struct.proto
+	json=on && protoc --proto_path=manifest/protobuf/proto --gogofast_out=paths=source_relative:manifest/protobuf/pb manifest/protobuf/proto/gate.proto
+	json=on && protoc --proto_path=manifest/protobuf/proto --gogofast_out=paths=source_relative:manifest/protobuf/pb manifest/protobuf/proto/db.proto
+	json=on && protoc --proto_path=manifest/protobuf/proto --gogofast_out=paths=source_relative:manifest/protobuf/pb manifest/protobuf/proto/struct.proto
+	json=on && protoc --proto_path=manifest/protobuf/proto --gogofast_out=paths=source_relative:manifest/protobuf/pb manifest/protobuf/proto/gpt.proto
 db:pb
 	cd manifest/protobuf && ai db
 

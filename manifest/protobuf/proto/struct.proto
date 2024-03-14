@@ -2,7 +2,17 @@ syntax = "proto3";
 package zhanmengao.aihelp.proto;
 option  go_package = "github.com/zhanmengao/aihelp/manifest/protobuf/pb";
 
-message UserMessage{
-  string Role = 1;
-  string Message = 2;
+message GptMessage{
+  string role = 1;
+  string content = 2;
+}
+
+message ChatSession{
+  string SessionKey = 1;
+  repeated GptMessage Message = 2;
+}
+
+//简介
+message ChatDescription{
+  string SessionKey = 1;//Key
 }

@@ -1,0 +1,9 @@
+syntax = "proto3";
+package zhanmengao.aihelp.proto;
+option  go_package = "github.com/zhanmengao/aihelp/manifest/protobuf/pb";
+
+import "gpt.proto";
+
+service aisrv{
+  
+}
