@@ -3,6 +3,13 @@ package zhanmengao.aihelp.proto;
 option  go_package = "github.com/zhanmengao/aihelp/manifest/protobuf/pb";
 
 
+enum ChatType{
+  ChatTypeInit = 0;
+  ChatTypeBook = 1;//是读书
+  ChatTypeCos = 2;//是Cos
+  ChatTypeWrite = 3;//是写作（围绕主题进行润色）
+  ChatTypeCoding = 4;//写代码
+}
 enum CosPlayRole{
   CosPlayRoleInit = 0;
   CosPlayBoyFriend = 1;//男朋友

@@ -32,7 +32,7 @@ func TestGpt3(t *testing.T) {
 		glog.Infof(gctx.New(), "midware")
 		return nil, gerror.New("111")
 	})
-	err := gpt.SendMessage(gctx.New(), "我是一个程序员", "Steam小游戏创新方向")
+	_, err := gpt.SendMessage(gctx.New(), "我是一个程序员", "Steam小游戏创新方向")
 	if err != nil {
 		t.Fatal(err)
 	}

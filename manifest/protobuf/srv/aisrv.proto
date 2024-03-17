@@ -4,6 +4,32 @@ option  go_package = "github.com/zhanmengao/aihelp/manifest/protobuf/pb";
 
 import "gpt.proto";
 
-service aisrv{
-  
+service aisrv_global{
+
+  //获取沟通记录（概要）
+  rpc GetHistory(GetHistoryListReq) returns(GetHistoryListRsp);
+  //获取详细信息
+  rpc GetChatInfo(GetChatInfoReq) returns(GetChatInfoRsp);
+  //继续讨论
+  rpc ContinueSend(ContinueSendReq) returns(ContinueSendRsp);
+  //
+}
+
+service aisrv_book{
+  //写书评
+  rpc ReadBook(ReadBookReq) returns(ReadBookRsp);
+}
+
+//cos喜欢的角色
+service aisrv_cos{
+  rpc CosPlay(CosPlayReq) returns(CosPlayRsp);
+}
+
+//写代码
+service aisrv_coding{
+}
+
+//写作
+service apsrv_writer{
+
 }

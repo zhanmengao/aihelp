@@ -2,7 +2,7 @@ package wssrv
 
 import (
 	"context"
-	"github.com/zhanmengao/gf/proto/go/pb"
+	"github.com/zhanmengao/aihelp/manifest/protobuf/pb"
 )
 
 type IHandler interface {

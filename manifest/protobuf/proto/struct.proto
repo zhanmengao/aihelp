@@ -2,6 +2,7 @@ syntax = "proto3";
 package zhanmengao.aihelp.proto;
 option  go_package = "github.com/zhanmengao/aihelp/manifest/protobuf/pb";
 
+import "enum.proto";
 message GptMessage{
   string role = 1;
   string content = 2;
@@ -15,4 +16,6 @@ message ChatSession{
 //简介
 message ChatDescription{
   string SessionKey = 1;//Key
+    ChatType Type = 2;
+    string Desc = 3;//记录用户说的第一句话（也可以让用户编辑）
 }

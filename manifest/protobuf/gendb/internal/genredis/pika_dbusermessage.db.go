@@ -16,16 +16,16 @@ func (p *Pika) getDBUserMessageDatabase() *basedb.THashStore[*pb.DBUserMessage] 
 
 // GetKeyDBUserMessage returns key of DBUserMessage
 //
-// generated from "//@db:hash|Pika|DBUserMessage:%s,UID|Session:%s,SessionKey"
+// generated from "// @db:hash|Pika|DBUser:%s,UID|DBUserMessage"
 func (p *Pika) GetKeyDBUserMessage(UID string) string {
 	return fmt.Sprintf(keyDBUserMessage, UID)
 }
 
 // GetFieldDBUserMessage returns field of DBUserMessage
 //
-// generated from "//@db:hash|Pika|DBUserMessage:%s,UID|Session:%s,SessionKey"
-func (p *Pika) GetFieldDBUserMessage(SessionKey string) string {
-	return fmt.Sprintf(fieldDBUserMessage, SessionKey)
+// generated from "// @db:hash|Pika|DBUser:%s,UID|DBUserMessage"
+func (p *Pika) GetFieldDBUserMessage() string {
+	return fieldDBUserMessage
 }
 
 // GetDBUserMessage loads DBUserMessage from `Pika`
@@ -36,29 +36,27 @@ func (p *Pika) GetFieldDBUserMessage(SessionKey string) string {
 //
 // prometheus metric: QPS, KeySize and OperationProcessTime
 //
-// generated from "//@db:hash|Pika|DBUserMessage:%s,UID|Session:%s,SessionKey"
-func (p *Pika) GetDBUserMessage(ctx context.Context, UID string, SessionKey string, opts ...*basedb.Options[*pb.DBUserMessage]) (data *pb.DBUserMessage, ok bool, err error) {
+// generated from "// @db:hash|Pika|DBUser:%s,UID|DBUserMessage"
+func (p *Pika) GetDBUserMessage(ctx context.Context, UID string, opts ...*basedb.Options[*pb.DBUserMessage]) (data *pb.DBUserMessage, ok bool, err error) {
 	key := p.GetKeyDBUserMessage(UID)
-	field := p.GetFieldDBUserMessage(SessionKey)
+	field := p.GetFieldDBUserMessage()
 	data = &pb.DBUserMessage{}
 	db := p.getDBUserMessageDatabase()
 	ok, err = db.Get(ctx, key, field, &data, opts...)
 	if !ok || err != nil {
 		data.UID = UID
-		data.SessionKey = SessionKey
 	}
 	return
 }
 
-func (p *Pika) GetDBUserMessageWithSession(ctx context.Context, UID string, SessionKey string, opts ...*basedb.Options[*pb.DBUserMessage]) (data *pb.DBUserMessage, ok bool, err error) {
+func (p *Pika) GetDBUserMessageWithSession(ctx context.Context, UID string, opts ...*basedb.Options[*pb.DBUserMessage]) (data *pb.DBUserMessage, ok bool, err error) {
 	key := p.GetKeyDBUserMessage(UID)
-	field := p.GetFieldDBUserMessage(SessionKey)
+	field := p.GetFieldDBUserMessage()
 	data = &pb.DBUserMessage{}
 	db := p.getDBUserMessageDatabase()
 	ok, err = db.GetFromSession(ctx, key, field, &data, opts...)
 	if !ok || err != nil {
 		data.UID = UID
-		data.SessionKey = SessionKey
 	}
 	return
 }
@@ -69,30 +67,30 @@ func (p *Pika) GetDBUserMessageWithSession(ctx context.Context, UID string, Sess
 //
 // prometheus metric: QPS, KeySize and OperationProcessTime
 //
-// generated from "//@db:hash|Pika|DBUserMessage:%s,UID|Session:%s,SessionKey"
+// generated from "// @db:hash|Pika|DBUser:%s,UID|DBUserMessage"
 func (p *Pika) SetDBUserMessage(ctx context.Context, data *pb.DBUserMessage) (err error) {
 	key := p.GetKeyDBUserMessage(data.UID)
-	field := p.GetFieldDBUserMessage(data.SessionKey)
+	field := p.GetFieldDBUserMessage()
 	db := p.getDBUserMessageDatabase()
 	return db.Set(ctx, key, field, data)
 }
 
 func (p *Pika) SetDBUserMessageWithSess(ctx context.Context, data *pb.DBUserMessage) (err error) {
 	key := p.GetKeyDBUserMessage(data.UID)
-	field := p.GetFieldDBUserMessage(data.SessionKey)
+	field := p.GetFieldDBUserMessage()
 	db := p.getDBUserMessageDatabase()
 	return db.SetWithSess(ctx, key, field, data)
 }
 
-// DeleteDBUserMessage is generated from "//@db:hash|Pika|DBUserMessage:%s,UID|Session:%s,SessionKey"
+// DeleteDBUserMessage is generated from "// @db:hash|Pika|DBUser:%s,UID|DBUserMessage"
 //
 //	err  error any error when put data to database
 //
 // if monitor is enabled on init this operation records prometheus
 // metric: QPS and OperationProcessTime
-func (p *Pika) DeleteDBUserMessage(ctx context.Context, UID string, SessionKey string) (ok bool, err error) {
+func (p *Pika) DeleteDBUserMessage(ctx context.Context, UID string) (ok bool, err error) {
 	key := p.GetKeyDBUserMessage(UID)
-	field := p.GetFieldDBUserMessage(SessionKey)
+	field := p.GetFieldDBUserMessage()
 	db := p.getDBUserMessageDatabase()
 	return db.Delete(ctx, key, field)
 }

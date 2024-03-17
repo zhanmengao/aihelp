@@ -20,9 +20,9 @@ type TGpt35 struct {
 	SessionKey string
 }
 
-func (p *TGpt35) SendMessage(ctx context.Context, defaultMsg, userContent string) (retMsg string, err error) {
+func (p *TGpt35) SendMessage(ctx context.Context, defaultMsg, userContent string) (retMsg []*pb.GptMessage, err error) {
 	//读出当前会话上下文
-	dbMsg, _, err := global.PikaDB.GetDBUserMessage(ctx, p.UID, p.SessionKey)
+	dbMsg, _, err := global.PikaDB.GetDBChatSession(ctx, p.UID, p.SessionKey)
 	if err != nil {
 		return
 	}
@@ -59,7 +59,7 @@ func (p *TGpt35) SendMessage(ctx context.Context, defaultMsg, userContent string
 		})
 	}
 	//如果为空，设置默认msg
-	if len(dbMsg.Message) <= 0 {
+	if len(dbMsg.Message) <= 0 && defaultMsg != "" {
 		req.Messages = append(req.Messages, openai.ChatCompletionMessage{
 			Role:         "system",
 			Content:      defaultMsg,
@@ -102,13 +102,15 @@ func (p *TGpt35) SendMessage(ctx context.Context, defaultMsg, userContent string
 	if err = json.Unmarshal(body, rsp); err != nil {
 		return
 	}
-	rspMsg := rsp.Choices[0].Message
+	for _, item := range rsp.Choices {
+		dbMsg.Message = append(dbMsg.Message, item.Message)
+		retMsg = append(retMsg, item.Message)
+	}
 	//回写
-	dbMsg.Message = append(dbMsg.Message, rspMsg)
-	if err = global.PikaDB.SetDBUserMessage(ctx, dbMsg); err != nil {
+	if err = global.PikaDB.SetDBChatSession(ctx, dbMsg); err != nil {
 		return
 	}
 	glog.Debugf(ctx, "gpt rsp [%+v]", string(body))
-	retMsg = rspMsg.Content
+
 	return
 }

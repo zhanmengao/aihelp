@@ -19,16 +19,24 @@ message GptChoices{
 }
 
 //获取交流历史
-message GetHistoryReq{
+message GetHistoryListReq{
 }
-message GetHistoryRsp{
+message GetHistoryListRsp{
   RspHead Head = 1;
+  repeated GptMessage Message = 3;
+}
 
+//获取具体信息
+message GetChatInfoReq{
+
+}
+message GetChatInfoRsp{
+  RspHead Head = 1;
 }
 
 
 //书评 / 概要
-message ReadBookReq{
+message 0ReadBookReq{
   string BookName = 1;
 }
 message ReadBookRsp{
@@ -43,5 +51,24 @@ message CosPlayReq{
     string RoleDesc = 2;//角色描述
 }
 message CosPlayRsp{
+  RspHead Head = 1;
+  repeated GptMessage Message = 2;//回复
+}
+
+//继续交流
+message ContinueSendReq{
+  string SessionID = 1;//对话ID
+  string Message = 2;
+}
+message ContinueSendRsp{
+  RspHead Head = 1;
+  repeated GptMessage Message = 2;//回复
+}
+
+//结束会话
+message StopSessionReq{
+  string SessionID = 1;//对话ID
+}
+message StopSessionRsp{
   RspHead Head = 1;
 }

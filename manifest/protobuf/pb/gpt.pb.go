@@ -149,24 +149,24 @@ func (m *GptChoices) GetMessage() *GptMessage {
 }
 
 // 获取交流历史
-type GetHistoryReq struct {
+type GetHistoryListReq struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GetHistoryReq) Reset()         { *m = GetHistoryReq{} }
-func (m *GetHistoryReq) String() string { return proto.CompactTextString(m) }
-func (*GetHistoryReq) ProtoMessage()    {}
-func (*GetHistoryReq) Descriptor() ([]byte, []int) {
+func (m *GetHistoryListReq) Reset()         { *m = GetHistoryListReq{} }
+func (m *GetHistoryListReq) String() string { return proto.CompactTextString(m) }
+func (*GetHistoryListReq) ProtoMessage()    {}
+func (*GetHistoryListReq) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ce67bf99dcb94ab6, []int{2}
 }
-func (m *GetHistoryReq) XXX_Unmarshal(b []byte) error {
+func (m *GetHistoryListReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetHistoryReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GetHistoryListReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetHistoryReq.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GetHistoryListReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -176,37 +176,132 @@ func (m *GetHistoryReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (m *GetHistoryReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetHistoryReq.Merge(m, src)
+func (m *GetHistoryListReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetHistoryListReq.Merge(m, src)
 }
-func (m *GetHistoryReq) XXX_Size() int {
+func (m *GetHistoryListReq) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetHistoryReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetHistoryReq.DiscardUnknown(m)
+func (m *GetHistoryListReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetHistoryListReq.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetHistoryReq proto.InternalMessageInfo
+var xxx_messageInfo_GetHistoryListReq proto.InternalMessageInfo
 
-type GetHistoryRsp struct {
+type GetHistoryListRsp struct {
+	Head                 *RspHead      `protobuf:"bytes,1,opt,name=Head,proto3" json:"Head,omitempty"`
+	Message              []*GptMessage `protobuf:"bytes,3,rep,name=Message,proto3" json:"Message,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
+}
+
+func (m *GetHistoryListRsp) Reset()         { *m = GetHistoryListRsp{} }
+func (m *GetHistoryListRsp) String() string { return proto.CompactTextString(m) }
+func (*GetHistoryListRsp) ProtoMessage()    {}
+func (*GetHistoryListRsp) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ce67bf99dcb94ab6, []int{3}
+}
+func (m *GetHistoryListRsp) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetHistoryListRsp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetHistoryListRsp.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetHistoryListRsp) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetHistoryListRsp.Merge(m, src)
+}
+func (m *GetHistoryListRsp) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetHistoryListRsp) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetHistoryListRsp.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetHistoryListRsp proto.InternalMessageInfo
+
+func (m *GetHistoryListRsp) GetHead() *RspHead {
+	if m != nil {
+		return m.Head
+	}
+	return nil
+}
+
+func (m *GetHistoryListRsp) GetMessage() []*GptMessage {
+	if m != nil {
+		return m.Message
+	}
+	return nil
+}
+
+// 获取具体信息
+type GetChatInfoReq struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetChatInfoReq) Reset()         { *m = GetChatInfoReq{} }
+func (m *GetChatInfoReq) String() string { return proto.CompactTextString(m) }
+func (*GetChatInfoReq) ProtoMessage()    {}
+func (*GetChatInfoReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ce67bf99dcb94ab6, []int{4}
+}
+func (m *GetChatInfoReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetChatInfoReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetChatInfoReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetChatInfoReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetChatInfoReq.Merge(m, src)
+}
+func (m *GetChatInfoReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetChatInfoReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetChatInfoReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetChatInfoReq proto.InternalMessageInfo
+
+type GetChatInfoRsp struct {
 	Head                 *RspHead `protobuf:"bytes,1,opt,name=Head,proto3" json:"Head,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GetHistoryRsp) Reset()         { *m = GetHistoryRsp{} }
-func (m *GetHistoryRsp) String() string { return proto.CompactTextString(m) }
-func (*GetHistoryRsp) ProtoMessage()    {}
-func (*GetHistoryRsp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ce67bf99dcb94ab6, []int{3}
+func (m *GetChatInfoRsp) Reset()         { *m = GetChatInfoRsp{} }
+func (m *GetChatInfoRsp) String() string { return proto.CompactTextString(m) }
+func (*GetChatInfoRsp) ProtoMessage()    {}
+func (*GetChatInfoRsp) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ce67bf99dcb94ab6, []int{5}
 }
-func (m *GetHistoryRsp) XXX_Unmarshal(b []byte) error {
+func (m *GetChatInfoRsp) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetHistoryRsp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GetChatInfoRsp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetHistoryRsp.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GetChatInfoRsp.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -216,19 +311,19 @@ func (m *GetHistoryRsp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (m *GetHistoryRsp) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetHistoryRsp.Merge(m, src)
+func (m *GetChatInfoRsp) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetChatInfoRsp.Merge(m, src)
 }
-func (m *GetHistoryRsp) XXX_Size() int {
+func (m *GetChatInfoRsp) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetHistoryRsp) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetHistoryRsp.DiscardUnknown(m)
+func (m *GetChatInfoRsp) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetChatInfoRsp.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetHistoryRsp proto.InternalMessageInfo
+var xxx_messageInfo_GetChatInfoRsp proto.InternalMessageInfo
 
-func (m *GetHistoryRsp) GetHead() *RspHead {
+func (m *GetChatInfoRsp) GetHead() *RspHead {
 	if m != nil {
 		return m.Head
 	}
@@ -247,7 +342,7 @@ func (m *ReadBookReq) Reset()         { *m = ReadBookReq{} }
 func (m *ReadBookReq) String() string { return proto.CompactTextString(m) }
 func (*ReadBookReq) ProtoMessage()    {}
 func (*ReadBookReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ce67bf99dcb94ab6, []int{4}
+	return fileDescriptor_ce67bf99dcb94ab6, []int{6}
 }
 func (m *ReadBookReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -295,7 +390,7 @@ func (m *ReadBookRsp) Reset()         { *m = ReadBookRsp{} }
 func (m *ReadBookRsp) String() string { return proto.CompactTextString(m) }
 func (*ReadBookRsp) ProtoMessage()    {}
 func (*ReadBookRsp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ce67bf99dcb94ab6, []int{5}
+	return fileDescriptor_ce67bf99dcb94ab6, []int{7}
 }
 func (m *ReadBookRsp) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -351,7 +446,7 @@ func (m *CosPlayReq) Reset()         { *m = CosPlayReq{} }
 func (m *CosPlayReq) String() string { return proto.CompactTextString(m) }
 func (*CosPlayReq) ProtoMessage()    {}
 func (*CosPlayReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ce67bf99dcb94ab6, []int{6}
+	return fileDescriptor_ce67bf99dcb94ab6, []int{8}
 }
 func (m *CosPlayReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -395,17 +490,18 @@ func (m *CosPlayReq) GetRoleDesc() string {
 }
 
 type CosPlayRsp struct {
-	Head                 *RspHead `protobuf:"bytes,1,opt,name=Head,proto3" json:"Head,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Head                 *RspHead      `protobuf:"bytes,1,opt,name=Head,proto3" json:"Head,omitempty"`
+	Message              []*GptMessage `protobuf:"bytes,2,rep,name=Message,proto3" json:"Message,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
 }
 
 func (m *CosPlayRsp) Reset()         { *m = CosPlayRsp{} }
 func (m *CosPlayRsp) String() string { return proto.CompactTextString(m) }
 func (*CosPlayRsp) ProtoMessage()    {}
 func (*CosPlayRsp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ce67bf99dcb94ab6, []int{7}
+	return fileDescriptor_ce67bf99dcb94ab6, []int{9}
 }
 func (m *CosPlayRsp) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -441,48 +537,273 @@ func (m *CosPlayRsp) GetHead() *RspHead {
 	return nil
 }
 
+func (m *CosPlayRsp) GetMessage() []*GptMessage {
+	if m != nil {
+		return m.Message
+	}
+	return nil
+}
+
+// 继续交流
+type ContinueSendReq struct {
+	SessionID            string   `protobuf:"bytes,1,opt,name=SessionID,proto3" json:"SessionID,omitempty"`
+	Message              string   `protobuf:"bytes,2,opt,name=Message,proto3" json:"Message,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContinueSendReq) Reset()         { *m = ContinueSendReq{} }
+func (m *ContinueSendReq) String() string { return proto.CompactTextString(m) }
+func (*ContinueSendReq) ProtoMessage()    {}
+func (*ContinueSendReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ce67bf99dcb94ab6, []int{10}
+}
+func (m *ContinueSendReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContinueSendReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContinueSendReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContinueSendReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContinueSendReq.Merge(m, src)
+}
+func (m *ContinueSendReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContinueSendReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContinueSendReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContinueSendReq proto.InternalMessageInfo
+
+func (m *ContinueSendReq) GetSessionID() string {
+	if m != nil {
+		return m.SessionID
+	}
+	return ""
+}
+
+func (m *ContinueSendReq) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+type ContinueSendRsp struct {
+	Head                 *RspHead      `protobuf:"bytes,1,opt,name=Head,proto3" json:"Head,omitempty"`
+	Message              []*GptMessage `protobuf:"bytes,2,rep,name=Message,proto3" json:"Message,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
+}
+
+func (m *ContinueSendRsp) Reset()         { *m = ContinueSendRsp{} }
+func (m *ContinueSendRsp) String() string { return proto.CompactTextString(m) }
+func (*ContinueSendRsp) ProtoMessage()    {}
+func (*ContinueSendRsp) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ce67bf99dcb94ab6, []int{11}
+}
+func (m *ContinueSendRsp) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContinueSendRsp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContinueSendRsp.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContinueSendRsp) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContinueSendRsp.Merge(m, src)
+}
+func (m *ContinueSendRsp) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContinueSendRsp) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContinueSendRsp.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContinueSendRsp proto.InternalMessageInfo
+
+func (m *ContinueSendRsp) GetHead() *RspHead {
+	if m != nil {
+		return m.Head
+	}
+	return nil
+}
+
+func (m *ContinueSendRsp) GetMessage() []*GptMessage {
+	if m != nil {
+		return m.Message
+	}
+	return nil
+}
+
+// 结束会话
+type StopSessionReq struct {
+	SessionID            string   `protobuf:"bytes,1,opt,name=SessionID,proto3" json:"SessionID,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *StopSessionReq) Reset()         { *m = StopSessionReq{} }
+func (m *StopSessionReq) String() string { return proto.CompactTextString(m) }
+func (*StopSessionReq) ProtoMessage()    {}
+func (*StopSessionReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ce67bf99dcb94ab6, []int{12}
+}
+func (m *StopSessionReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *StopSessionReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_StopSessionReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *StopSessionReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StopSessionReq.Merge(m, src)
+}
+func (m *StopSessionReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *StopSessionReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_StopSessionReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StopSessionReq proto.InternalMessageInfo
+
+func (m *StopSessionReq) GetSessionID() string {
+	if m != nil {
+		return m.SessionID
+	}
+	return ""
+}
+
+type StopSessionRsp struct {
+	Head                 *RspHead `protobuf:"bytes,1,opt,name=Head,proto3" json:"Head,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *StopSessionRsp) Reset()         { *m = StopSessionRsp{} }
+func (m *StopSessionRsp) String() string { return proto.CompactTextString(m) }
+func (*StopSessionRsp) ProtoMessage()    {}
+func (*StopSessionRsp) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ce67bf99dcb94ab6, []int{13}
+}
+func (m *StopSessionRsp) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *StopSessionRsp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_StopSessionRsp.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *StopSessionRsp) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StopSessionRsp.Merge(m, src)
+}
+func (m *StopSessionRsp) XXX_Size() int {
+	return m.Size()
+}
+func (m *StopSessionRsp) XXX_DiscardUnknown() {
+	xxx_messageInfo_StopSessionRsp.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StopSessionRsp proto.InternalMessageInfo
+
+func (m *StopSessionRsp) GetHead() *RspHead {
+	if m != nil {
+		return m.Head
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*GptMessageResponse)(nil), "zhanmengao.aihelp.proto.GptMessageResponse")
 	proto.RegisterType((*GptChoices)(nil), "zhanmengao.aihelp.proto.GptChoices")
-	proto.RegisterType((*GetHistoryReq)(nil), "zhanmengao.aihelp.proto.GetHistoryReq")
-	proto.RegisterType((*GetHistoryRsp)(nil), "zhanmengao.aihelp.proto.GetHistoryRsp")
+	proto.RegisterType((*GetHistoryListReq)(nil), "zhanmengao.aihelp.proto.GetHistoryListReq")
+	proto.RegisterType((*GetHistoryListRsp)(nil), "zhanmengao.aihelp.proto.GetHistoryListRsp")
+	proto.RegisterType((*GetChatInfoReq)(nil), "zhanmengao.aihelp.proto.GetChatInfoReq")
+	proto.RegisterType((*GetChatInfoRsp)(nil), "zhanmengao.aihelp.proto.GetChatInfoRsp")
 	proto.RegisterType((*ReadBookReq)(nil), "zhanmengao.aihelp.proto.ReadBookReq")
 	proto.RegisterType((*ReadBookRsp)(nil), "zhanmengao.aihelp.proto.ReadBookRsp")
 	proto.RegisterType((*CosPlayReq)(nil), "zhanmengao.aihelp.proto.CosPlayReq")
 	proto.RegisterType((*CosPlayRsp)(nil), "zhanmengao.aihelp.proto.CosPlayRsp")
+	proto.RegisterType((*ContinueSendReq)(nil), "zhanmengao.aihelp.proto.ContinueSendReq")
+	proto.RegisterType((*ContinueSendRsp)(nil), "zhanmengao.aihelp.proto.ContinueSendRsp")
+	proto.RegisterType((*StopSessionReq)(nil), "zhanmengao.aihelp.proto.StopSessionReq")
+	proto.RegisterType((*StopSessionRsp)(nil), "zhanmengao.aihelp.proto.StopSessionRsp")
 }
 
 func init() { proto.RegisterFile("gpt.proto", fileDescriptor_ce67bf99dcb94ab6) }
 
 var fileDescriptor_ce67bf99dcb94ab6 = []byte{
-	// 420 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x52, 0x4d, 0x6f, 0xd3, 0x40,
-	0x14, 0xec, 0xc6, 0xa5, 0x1f, 0x2f, 0x50, 0xa4, 0x15, 0x02, 0x2b, 0x07, 0x2b, 0x5a, 0x38, 0x84,
-	0x8b, 0x2d, 0x02, 0x57, 0x24, 0x94, 0x82, 0x52, 0x09, 0x15, 0xa1, 0x15, 0x27, 0x6e, 0x6b, 0xfb,
-	0xd5, 0xd9, 0x12, 0x7b, 0xb7, 0xde, 0xb5, 0x44, 0x39, 0xf2, 0x1f, 0xf8, 0x4f, 0x1c, 0xfb, 0x13,
-	0xc0, 0x27, 0x8e, 0xfc, 0x04, 0x64, 0xaf, 0xed, 0xc0, 0x21, 0xa2, 0xca, 0x6d, 0x66, 0x3d, 0x6f,
-	0xde, 0xbc, 0x91, 0xe1, 0x38, 0xd3, 0x36, 0xd4, 0xa5, 0xb2, 0x8a, 0x3e, 0xfa, 0xb2, 0x12, 0x45,
-	0x8e, 0x45, 0x26, 0x54, 0x28, 0xe4, 0x0a, 0xd7, 0xda, 0x7d, 0x98, 0xdc, 0x35, 0xb6, 0xac, 0x92,
-	0x4e, 0x36, 0x81, 0x4c, 0x58, 0xec, 0x31, 0x16, 0x55, 0xee, 0x30, 0xfb, 0x46, 0x80, 0x2e, 0xb5,
-	0x3d, 0x47, 0x63, 0x44, 0x86, 0x1c, 0x8d, 0x56, 0x85, 0x41, 0x7a, 0x02, 0x23, 0x99, 0xfa, 0x64,
-	0x4a, 0x66, 0xc7, 0x7c, 0x24, 0x53, 0xfa, 0x10, 0x0e, 0x54, 0x7c, 0x89, 0x89, 0xf5, 0x47, 0xed,
-	0x5b, 0xc7, 0xa8, 0x0f, 0x87, 0x49, 0x89, 0xc2, 0x62, 0xea, 0x7b, 0x53, 0x32, 0xf3, 0x78, 0x4f,
-	0xe9, 0x4b, 0x38, 0x4c, 0x56, 0x4a, 0x26, 0x68, 0xfc, 0xfd, 0xa9, 0x37, 0x1b, 0xcf, 0x1f, 0x87,
-	0x5b, 0x92, 0x86, 0x4b, 0x6d, 0x4f, 0x9d, 0x94, 0xf7, 0x33, 0x4c, 0x00, 0x6c, 0x9e, 0xe9, 0x03,
-	0xb8, 0x23, 0x8b, 0x14, 0x3f, 0xb7, 0x89, 0x3c, 0xee, 0x48, 0xb3, 0x22, 0x77, 0xb9, 0xdb, 0x54,
-	0xff, 0x59, 0xd1, 0x9f, 0xd8, 0xcf, 0xb0, 0xfb, 0x70, 0x6f, 0x89, 0xf6, 0x4c, 0x1a, 0xab, 0xca,
-	0x6b, 0x8e, 0x57, 0xec, 0xcd, 0x3f, 0x0f, 0x46, 0xd3, 0x17, 0xb0, 0x7f, 0x86, 0xc2, 0xf5, 0x30,
-	0x9e, 0x4f, 0xb7, 0xba, 0x73, 0xa3, 0x1b, 0x1d, 0x6f, 0xd5, 0xec, 0x29, 0x8c, 0x39, 0x8a, 0x74,
-	0xa1, 0xd4, 0x27, 0x8e, 0x57, 0x74, 0x02, 0x47, 0x0d, 0x7c, 0x27, 0x72, 0xec, 0x0a, 0x1d, 0x38,
-	0xfb, 0x4a, 0xfe, 0xd2, 0xee, 0xba, 0xb0, 0xe9, 0xe1, 0x7c, 0xe8, 0xc1, 0xbb, 0x75, 0x0f, 0x1d,
-	0x60, 0x97, 0x00, 0xa7, 0xca, 0xbc, 0x5f, 0x8b, 0xa6, 0x04, 0xfa, 0x0a, 0x8e, 0xb8, 0x5a, 0xe3,
-	0x87, 0x6b, 0xed, 0xe2, 0x9e, 0xcc, 0x9f, 0x6c, 0x75, 0xeb, 0xc7, 0xd4, 0x1a, 0xf9, 0x30, 0xd5,
-	0x1c, 0xdc, 0xe0, 0xd7, 0x68, 0x92, 0xee, 0x6f, 0x19, 0x38, 0x5b, 0x6c, 0x76, 0xed, 0x7a, 0xee,
-	0xe2, 0xed, 0xcd, 0xcf, 0x60, 0xef, 0x7b, 0x1d, 0x90, 0x9b, 0x3a, 0x20, 0x3f, 0xea, 0x80, 0xfc,
-	0xaa, 0x83, 0xbd, 0xdf, 0x75, 0x40, 0x3e, 0x3e, 0xcb, 0xa4, 0x5d, 0x55, 0x71, 0x98, 0xa8, 0x3c,
-	0xda, 0x78, 0x45, 0xce, 0x2b, 0xca, 0x45, 0x21, 0x2f, 0xd0, 0xd8, 0xa8, 0x35, 0x8d, 0xab, 0x8b,
-	0x48, 0xc7, 0xf1, 0x41, 0x4b, 0x9e, 0xff, 0x09, 0x00, 0x00, 0xff, 0xff, 0xa5, 0xec, 0x5f, 0xf8,
-	0x52, 0x03, 0x00, 0x00,
+	// 514 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x93, 0xcf, 0x8e, 0x12, 0x4f,
+	0x10, 0xc7, 0xb7, 0x61, 0x7f, 0xbb, 0x4b, 0xf1, 0x0b, 0xea, 0x68, 0x74, 0x42, 0xcc, 0x84, 0x8c,
+	0x1e, 0xf0, 0x32, 0x44, 0xf4, 0x6a, 0x62, 0x96, 0x8d, 0x2c, 0xd1, 0x35, 0xa6, 0xf1, 0xe4, 0xad,
+	0x99, 0x29, 0xa0, 0x57, 0xa6, 0xbb, 0x97, 0x6e, 0x12, 0xf1, 0xa6, 0x07, 0xe3, 0x0b, 0xf8, 0x4e,
+	0x1e, 0xf7, 0x11, 0x74, 0x4e, 0x1e, 0x7d, 0x04, 0xd3, 0xf3, 0x87, 0x41, 0x0d, 0x21, 0x21, 0x26,
+	0x7b, 0xab, 0xaa, 0xae, 0x3f, 0x9f, 0x6f, 0x75, 0x37, 0xd4, 0x26, 0xca, 0x04, 0x6a, 0x2e, 0x8d,
+	0x74, 0xee, 0xbc, 0x9f, 0x32, 0x11, 0xa3, 0x98, 0x30, 0x19, 0x30, 0x3e, 0xc5, 0x99, 0xca, 0x0e,
+	0x9a, 0xff, 0x6b, 0x33, 0x5f, 0x84, 0x79, 0x5a, 0x13, 0x26, 0xcc, 0x60, 0x61, 0xa3, 0x58, 0xc4,
+	0x99, 0xed, 0x7f, 0x21, 0xe0, 0xf4, 0x95, 0x39, 0x43, 0xad, 0xd9, 0x04, 0x29, 0x6a, 0x25, 0x85,
+	0x46, 0xa7, 0x01, 0x15, 0x1e, 0xb9, 0xa4, 0x45, 0xda, 0x35, 0x5a, 0xe1, 0x91, 0x73, 0x1b, 0x0e,
+	0xe4, 0xe8, 0x1c, 0x43, 0xe3, 0x56, 0xd2, 0x58, 0xee, 0x39, 0x2e, 0x1c, 0x86, 0x73, 0x64, 0x06,
+	0x23, 0xb7, 0xda, 0x22, 0xed, 0x2a, 0x2d, 0x5c, 0xe7, 0x09, 0x1c, 0x86, 0x53, 0xc9, 0x43, 0xd4,
+	0xee, 0x7e, 0xab, 0xda, 0xae, 0x77, 0xef, 0x05, 0x1b, 0x48, 0x83, 0xbe, 0x32, 0xbd, 0x2c, 0x95,
+	0x16, 0x35, 0x3e, 0x03, 0x28, 0xc3, 0xce, 0x2d, 0xf8, 0x8f, 0x8b, 0x08, 0xdf, 0xa5, 0x44, 0x55,
+	0x9a, 0x39, 0x76, 0x44, 0x9c, 0x71, 0xa7, 0x54, 0x5b, 0x46, 0x14, 0x12, 0x8b, 0x1a, 0xff, 0x26,
+	0xdc, 0xe8, 0xa3, 0x39, 0xe5, 0xda, 0xc8, 0xf9, 0xf2, 0x05, 0xd7, 0x86, 0xe2, 0x85, 0xff, 0x99,
+	0xfc, 0x15, 0xd5, 0xca, 0x79, 0x0c, 0xfb, 0xa7, 0xc8, 0xb2, 0x85, 0xd4, 0xbb, 0xad, 0x8d, 0x63,
+	0xa8, 0x56, 0x36, 0x8f, 0xa6, 0xd9, 0x96, 0x2f, 0x1f, 0xea, 0x56, 0xb7, 0xaf, 0x60, 0xc5, 0x97,
+	0x1b, 0xfe, 0x75, 0x68, 0xf4, 0xd1, 0xf4, 0xa6, 0xcc, 0x0c, 0xc4, 0x58, 0x5a, 0xb8, 0x67, 0xbf,
+	0x47, 0x76, 0x05, 0xf3, 0x1f, 0x40, 0x9d, 0x22, 0x8b, 0x8e, 0xa5, 0x7c, 0x4b, 0xf1, 0xc2, 0x69,
+	0xc2, 0x91, 0x35, 0x5f, 0xb2, 0x18, 0xf3, 0x2b, 0x5f, 0xf9, 0xfe, 0x47, 0xb2, 0x96, 0xfb, 0x2f,
+	0x36, 0x51, 0xd9, 0x61, 0x13, 0xe7, 0x00, 0x3d, 0xa9, 0x5f, 0xcd, 0xd8, 0xd2, 0xe2, 0x3e, 0x85,
+	0x23, 0x2a, 0x67, 0xf8, 0x7a, 0xa9, 0x32, 0xdc, 0x46, 0xf7, 0xfe, 0xc6, 0x6e, 0x45, 0x99, 0x9c,
+	0x21, 0x5d, 0x55, 0x59, 0xc1, 0xd6, 0x3e, 0x41, 0x1d, 0xe6, 0xef, 0x79, 0xe5, 0xfb, 0x1f, 0x48,
+	0x39, 0xec, 0xaa, 0xf4, 0x0e, 0xe0, 0x5a, 0x4f, 0x0a, 0xc3, 0xc5, 0x02, 0x87, 0x28, 0x22, 0x2b,
+	0xfa, 0x2e, 0xd4, 0x86, 0xa8, 0x35, 0x97, 0x62, 0x70, 0x92, 0x5f, 0x52, 0x19, 0xb0, 0xdf, 0xf0,
+	0x6c, 0xed, 0x27, 0xd4, 0xca, 0x56, 0x9f, 0xc8, 0x1f, 0xbd, 0xae, 0x4a, 0x53, 0x00, 0x8d, 0xa1,
+	0x91, 0x2a, 0x67, 0xde, 0x2a, 0xc9, 0xbe, 0xf5, 0xf5, 0xfc, 0x5d, 0xb1, 0x8f, 0x9f, 0x5f, 0x7e,
+	0xf7, 0xf6, 0xbe, 0x26, 0x1e, 0xb9, 0x4c, 0x3c, 0xf2, 0x2d, 0xf1, 0xc8, 0x8f, 0xc4, 0xdb, 0xfb,
+	0x99, 0x78, 0xe4, 0xcd, 0xc3, 0x09, 0x37, 0xd3, 0xc5, 0x28, 0x08, 0x65, 0xdc, 0x29, 0x7b, 0x75,
+	0xb2, 0x5e, 0x9d, 0x98, 0x09, 0x3e, 0x46, 0x6d, 0x3a, 0x69, 0xd3, 0xd1, 0x62, 0xdc, 0x51, 0xa3,
+	0xd1, 0x41, 0xea, 0x3c, 0xfa, 0x15, 0x00, 0x00, 0xff, 0xff, 0x4c, 0xfd, 0x07, 0x26, 0x80, 0x05,
+	0x00, 0x00,
 }
 
 func (m *GptMessageResponse) Marshal() (dAtA []byte, err error) {
@@ -589,7 +910,7 @@ func (m *GptChoices) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *GetHistoryReq) Marshal() (dAtA []byte, err error) {
+func (m *GetHistoryListReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -599,12 +920,12 @@ func (m *GetHistoryReq) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetHistoryReq) MarshalTo(dAtA []byte) (int, error) {
+func (m *GetHistoryListReq) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetHistoryReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GetHistoryListReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -616,7 +937,7 @@ func (m *GetHistoryReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *GetHistoryRsp) Marshal() (dAtA []byte, err error) {
+func (m *GetHistoryListRsp) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -626,12 +947,92 @@ func (m *GetHistoryRsp) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetHistoryRsp) MarshalTo(dAtA []byte) (int, error) {
+func (m *GetHistoryListRsp) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetHistoryRsp) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GetHistoryListRsp) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Message) > 0 {
+		for iNdEx := len(m.Message) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Message[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGpt(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if m.Head != nil {
+		{
+			size, err := m.Head.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGpt(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetChatInfoReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetChatInfoReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetChatInfoReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetChatInfoRsp) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetChatInfoRsp) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetChatInfoRsp) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -805,6 +1206,187 @@ func (m *CosPlayRsp) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
+	if len(m.Message) > 0 {
+		for iNdEx := len(m.Message) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Message[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGpt(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if m.Head != nil {
+		{
+			size, err := m.Head.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGpt(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContinueSendReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContinueSendReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContinueSendReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintGpt(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.SessionID) > 0 {
+		i -= len(m.SessionID)
+		copy(dAtA[i:], m.SessionID)
+		i = encodeVarintGpt(dAtA, i, uint64(len(m.SessionID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContinueSendRsp) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContinueSendRsp) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContinueSendRsp) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Message) > 0 {
+		for iNdEx := len(m.Message) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Message[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGpt(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if m.Head != nil {
+		{
+			size, err := m.Head.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGpt(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *StopSessionReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *StopSessionReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *StopSessionReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.SessionID) > 0 {
+		i -= len(m.SessionID)
+		copy(dAtA[i:], m.SessionID)
+		i = encodeVarintGpt(dAtA, i, uint64(len(m.SessionID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *StopSessionRsp) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *StopSessionRsp) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *StopSessionRsp) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
 	if m.Head != nil {
 		{
 			size, err := m.Head.MarshalToSizedBuffer(dAtA[:i])
@@ -879,7 +1461,7 @@ func (m *GptChoices) Size() (n int) {
 	return n
 }
 
-func (m *GetHistoryReq) Size() (n int) {
+func (m *GetHistoryListReq) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -891,7 +1473,41 @@ func (m *GetHistoryReq) Size() (n int) {
 	return n
 }
 
-func (m *GetHistoryRsp) Size() (n int) {
+func (m *GetHistoryListRsp) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Head != nil {
+		l = m.Head.Size()
+		n += 1 + l + sovGpt(uint64(l))
+	}
+	if len(m.Message) > 0 {
+		for _, e := range m.Message {
+			l = e.Size()
+			n += 1 + l + sovGpt(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GetChatInfoReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GetChatInfoRsp) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -965,6 +1581,86 @@ func (m *CosPlayReq) Size() (n int) {
 }
 
 func (m *CosPlayRsp) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Head != nil {
+		l = m.Head.Size()
+		n += 1 + l + sovGpt(uint64(l))
+	}
+	if len(m.Message) > 0 {
+		for _, e := range m.Message {
+			l = e.Size()
+			n += 1 + l + sovGpt(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContinueSendReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.SessionID)
+	if l > 0 {
+		n += 1 + l + sovGpt(uint64(l))
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovGpt(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContinueSendRsp) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Head != nil {
+		l = m.Head.Size()
+		n += 1 + l + sovGpt(uint64(l))
+	}
+	if len(m.Message) > 0 {
+		for _, e := range m.Message {
+			l = e.Size()
+			n += 1 + l + sovGpt(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *StopSessionReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.SessionID)
+	if l > 0 {
+		n += 1 + l + sovGpt(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *StopSessionRsp) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1260,7 +1956,7 @@ func (m *GptChoices) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GetHistoryReq) Unmarshal(dAtA []byte) error {
+func (m *GetHistoryListReq) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1283,10 +1979,10 @@ func (m *GetHistoryReq) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetHistoryReq: wiretype end group for non-group")
+			return fmt.Errorf("proto: GetHistoryListReq: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetHistoryReq: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GetHistoryListReq: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -1311,7 +2007,7 @@ func (m *GetHistoryReq) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GetHistoryRsp) Unmarshal(dAtA []byte) error {
+func (m *GetHistoryListRsp) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1334,10 +2030,182 @@ func (m *GetHistoryRsp) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetHistoryRsp: wiretype end group for non-group")
+			return fmt.Errorf("proto: GetHistoryListRsp: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetHistoryRsp: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GetHistoryListRsp: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Head", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGpt
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGpt
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Head == nil {
+				m.Head = &RspHead{}
+			}
+			if err := m.Head.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGpt
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGpt
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = append(m.Message, &GptMessage{})
+			if err := m.Message[len(m.Message)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGpt(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetChatInfoReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGpt
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetChatInfoReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetChatInfoReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGpt(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetChatInfoRsp) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGpt
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetChatInfoRsp: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetChatInfoRsp: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1731,6 +2599,446 @@ func (m *CosPlayRsp) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: CosPlayRsp: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Head", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGpt
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGpt
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Head == nil {
+				m.Head = &RspHead{}
+			}
+			if err := m.Head.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGpt
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGpt
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = append(m.Message, &GptMessage{})
+			if err := m.Message[len(m.Message)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGpt(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContinueSendReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGpt
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContinueSendReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContinueSendReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SessionID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGpt
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGpt
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SessionID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGpt
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGpt
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGpt(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContinueSendRsp) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGpt
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContinueSendRsp: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContinueSendRsp: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Head", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGpt
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGpt
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Head == nil {
+				m.Head = &RspHead{}
+			}
+			if err := m.Head.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGpt
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGpt
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = append(m.Message, &GptMessage{})
+			if err := m.Message[len(m.Message)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGpt(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *StopSessionReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGpt
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: StopSessionReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: StopSessionReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SessionID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGpt
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGpt
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SessionID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGpt(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGpt
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *StopSessionRsp) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGpt
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: StopSessionRsp: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: StopSessionRsp: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

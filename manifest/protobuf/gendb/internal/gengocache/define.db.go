@@ -1,9 +1,11 @@
 package cache
 
-// DB: Pika, TotalKeys: 1
+// DB: Pika, TotalKeys: 2
 const (
-	keyDBUserMessage   = "DBUserMessage:%s" // type: hash
-	fieldDBUserMessage = "Session:%s"
+	keyDBChatSession   = "DBUser:%s" // type: hash
+	fieldDBChatSession = "DBChatSession:%s"
+	keyDBUserMessage   = "DBUser:%s" // type: hash
+	fieldDBUserMessage = "DBUserMessage"
 )
 
 type Pika struct{}
