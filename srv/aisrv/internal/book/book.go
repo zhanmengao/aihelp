@@ -12,7 +12,7 @@ import (
 func (b bookService) ReadBook(ctx context.Context, req *pb.ReadBookReq) (rsp *pb.ReadBookRsp, err error) {
 	rsp = &pb.ReadBookRsp{}
 	//创建一个SessionID
-	msg := fmt.Sprintf("《%s》这本书讲述了什么？有什么让人难忘的部分", req.BookName)
+	msg := fmt.Sprintf("《%s》这本书讲述了什么？写下你读这本书的感受和书评", req.BookName)
 	retMsg, err := gpt.NewGpt(ctx, framework.GetUID(ctx), framework.NewID()).SendMessage(ctx, "", msg)
 	if err != nil {
 		return

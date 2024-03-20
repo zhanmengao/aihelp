@@ -6,6 +6,8 @@ import "struct.proto";
 import "gate.proto";
 import "enum.proto";
 
+//从AI解决什么问题出发，而不是从AI能做什么————从业务场景
+
 message GptMessageResponse{
   string id = 1;
   string object = 2;
@@ -36,7 +38,7 @@ message GetChatInfoRsp{
 
 
 //书评 / 概要
-message 0ReadBookReq{
+message ReadBookReq{
   string BookName = 1;
 }
 message ReadBookRsp{
@@ -71,4 +73,16 @@ message StopSessionReq{
 }
 message StopSessionRsp{
   RspHead Head = 1;
+}
+
+//写作请求
+message WriteReq{
+   WriteType Write = 1;
+   WriteStyle Style = 2;
+   string Desc = 3;//生成
+}
+
+message WriteRsp{
+    RspHead Head = 1;
+      repeated GptMessage Message = 2;//回复     
 }

@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/os/glog"
 	"github.com/sashabaranov/go-openai"
 	"github.com/zhanmengao/aihelp/config"
 	"github.com/zhanmengao/aihelp/global"
@@ -110,7 +109,6 @@ func (p *TGpt35) SendMessage(ctx context.Context, defaultMsg, userContent string
 	if err = global.PikaDB.SetDBChatSession(ctx, dbMsg); err != nil {
 		return
 	}
-	glog.Debugf(ctx, "gpt rsp [%+v]", string(body))
 
 	return
 }

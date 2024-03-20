@@ -16,3 +16,17 @@ enum CosPlayRole{
   CosPlayGirlFriend = 2;//女朋友
   CosPlayCat = 3;//肥特
 }
+
+//写作类型
+enum WriteType{
+  WriteInit = 0;
+  WriteWorkSummary = 1; //工作总结
+  WriteTopic = 2;//主题写作：围绕XXX展开
+}
+
+//写作风格
+enum WriteStyle{
+  WriteStyleInit = 0;
+    WriteStyleSolemnly = 1;//郑重
+    WriteStyleHumorous = 2;//幽默
+}

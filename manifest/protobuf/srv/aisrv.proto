@@ -31,5 +31,5 @@ service aisrv_coding{
 
 //写作
 service apsrv_writer{
-
+  rpc Write(WriteReq) returns(WriteRsp);
 }

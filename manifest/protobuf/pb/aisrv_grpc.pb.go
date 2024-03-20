@@ -400,6 +400,7 @@ var AisrvCoding_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ApsrvWriterClient interface {
+	Write(ctx context.Context, in *WriteReq, opts ...grpc.CallOption) (*WriteRsp, error)
 }
 
 type apsrvWriterClient struct {
@@ -410,14 +411,28 @@ func NewApsrvWriterClient(cc grpc.ClientConnInterface) ApsrvWriterClient {
 	return &apsrvWriterClient{cc}
 }
 
+func (c *apsrvWriterClient) Write(ctx context.Context, in *WriteReq, opts ...grpc.CallOption) (*WriteRsp, error) {
+	out := new(WriteRsp)
+	err := c.cc.Invoke(ctx, "/zhanmengao.aihelp.proto.apsrv_writer/Write", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ApsrvWriterServer is the server API for ApsrvWriter service.
 // All implementations should embed UnimplementedApsrvWriterServer
 // for forward compatibility
 type ApsrvWriterServer interface {
+	Write(context.Context, *WriteReq) (*WriteRsp, error)
 }
 
 // UnimplementedApsrvWriterServer should be embedded to have forward compatible implementations.
 type UnimplementedApsrvWriterServer struct {
+}
+
+func (UnimplementedApsrvWriterServer) Write(context.Context, *WriteReq) (*WriteRsp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Write not implemented")
 }
 
 // UnsafeApsrvWriterServer may be embedded to opt out of forward compatibility for this service.
@@ -431,13 +446,36 @@ func RegisterApsrvWriterServer(s grpc.ServiceRegistrar, srv ApsrvWriterServer) {
 	s.RegisterService(&ApsrvWriter_ServiceDesc, srv)
 }
 
+func _ApsrvWriter_Write_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WriteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApsrvWriterServer).Write(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/zhanmengao.aihelp.proto.apsrv_writer/Write",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApsrvWriterServer).Write(ctx, req.(*WriteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ApsrvWriter_ServiceDesc is the grpc.ServiceDesc for ApsrvWriter service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ApsrvWriter_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "zhanmengao.aihelp.proto.apsrv_writer",
 	HandlerType: (*ApsrvWriterServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "aisrv.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Write",
+			Handler:    _ApsrvWriter_Write_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "aisrv.proto",
 }

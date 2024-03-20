@@ -6,6 +6,7 @@ import "enum.proto";
 message GptMessage{
   string role = 1;
   string content = 2;
+  bool Show = 3;//是否展示，前言不展示
 }
 
 message ChatSession{
